@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dipan Roy â€” Projects Showcase</title>
-  <meta name="description" content="Dipan Roy â€” ECE Engineer & Full Stack Developer. Projects showcase for interview." />
+  <title>Dipan Roy - Projects Showcase</title>
+  <meta name="description" content="Dipan Roy. Projects showcase for interview." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
   <style>
@@ -46,7 +46,7 @@
       z-index: 0;
     }
 
-    /* â”€â”€ HERO â”€â”€ */
+    /* -- HERO -- */
     .hero {
       position: relative;
       z-index: 1;
@@ -166,7 +166,7 @@
       transform: translateY(-2px);
     }
 
-    /* â”€â”€ SECTION â”€â”€ */
+    /* -- SECTION -- */
     .section {
       position: relative;
       z-index: 1;
@@ -192,7 +192,7 @@
       margin-bottom: 40px;
     }
 
-    /* â”€â”€ PROJECTS GRID â”€â”€ */
+    /* -- PROJECTS GRID -- */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -332,7 +332,7 @@
       letter-spacing: 0.05em;
     }
 
-    /* â”€â”€ SKILLS â”€â”€ */
+    /* -- SKILLS -- */
     .skills-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -374,7 +374,7 @@
       font-size: 0.78rem;
     }
 
-    /* â”€â”€ CONTACT â”€â”€ */
+    /* -- CONTACT -- */
     .contact-bar {
       background: linear-gradient(135deg, rgba(79,142,247,0.1), rgba(124,58,237,0.1));
       border: 1px solid rgba(79,142,247,0.2);
@@ -391,7 +391,7 @@
 
     .contact-bar p { color: var(--muted); margin-bottom: 28px; }
 
-    /* â”€â”€ STATUS DOTS â”€â”€ */
+    /* -- STATUS DOTS -- */
     .status-live::before {
       content: '';
       display: inline-block;
@@ -416,14 +416,14 @@
       50% { opacity: 0.3; }
     }
 
-    /* â”€â”€ DIVIDER â”€â”€ */
+    /* -- DIVIDER -- */
     .divider {
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--border), transparent);
       margin: 0 24px 60px;
     }
 
-    /* â”€â”€ FOOTER â”€â”€ */
+    /* -- FOOTER -- */
     footer {
       position: relative;
       z-index: 1;
@@ -436,7 +436,7 @@
 
     footer a { color: var(--accent); text-decoration: none; }
 
-    /* â”€â”€ RESPONSIVE â”€â”€ */
+    /* -- RESPONSIVE -- */
     @media (max-width: 600px) {
       .hero { padding: 60px 16px 40px; }
       .card-featured { grid-column: auto; }
@@ -446,34 +446,24 @@
 </head>
 <body>
 
-  <!-- â•â•â• HERO â•â•â• -->
+  <!-- === HERO === -->
   <section class="hero">
-    <div class="avatar">ðŸ‘¨â€ðŸ’»</div>
+    <div class="avatar">DR</div>
     <h1>Dipan Roy</h1>
-    <p class="role"><span>ECE Engineer</span> &amp; Full Stack Developer</p>
-    <div class="badge-row">
-      <span class="badge">React</span>
-      <span class="badge">Node.js</span>
-      <span class="badge">Python</span>
-      <span class="badge">SQLite</span>
-      <span class="badge">Leaflet</span>
-      <span class="badge">WhatsApp API</span>
-      <span class="badge">IoT / Embedded</span>
-    </div>
     <div class="hero-links">
       <a href="https://dipanr705-12.github.io/my-portfolio/" target="_blank" class="btn btn-primary">
-        ðŸŒ Main Portfolio
+         Main Portfolio
       </a>
       <a href="https://dipanroy.netlify.app" target="_blank" class="btn btn-outline">
-        ðŸ”— Alt Portfolio
+         Alt Portfolio
       </a>
       <a href="https://github.com/dipanr705-12" target="_blank" class="btn btn-outline">
-        ðŸ™ GitHub
+         GitHub
       </a>
     </div>
   </section>
 
-  <!-- â•â•â• PROJECTS â•â•â• -->
+  <!-- === PROJECTS === -->
   <div class="section">
     <p class="section-title">// my work</p>
     <h2 class="section-heading">Featured Projects</h2>
@@ -482,13 +472,13 @@
 
       <!-- Project 1 - LOCAL EVENTS MAP (FEATURED) -->
       <div class="card card-featured">
-        <span class="featured-badge">â­ FEATURED</span>
+        <span class="featured-badge">FEATURED</span>
         <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#1e40af,#7c3aed);">ðŸ—ºï¸</div>
+          <div class="card-icon" style="background: linear-gradient(135deg,#1e40af,#7c3aed);">MAP</div>
           <span class="card-number">01</span>
         </div>
         <div class="card-body">
-          <h3>Local Events India â€” Interactive Map & Discovery</h3>
+          <h3>Local Events India - Interactive Map & Discovery</h3>
           <p>A full-stack web app for discovering and sharing local events across India. Features an interactive Leaflet map, 42+ Durga Puja pandals directory with GPS coordinates, rich filtering by city/category/date/distance, "Near Me" geolocation, event hosting form with live map picker, Google Calendar integration, and favorites. Built with React 19, Vite, Tailwind CSS, Node.js, Express, and native SQLite (Node 22+).</p>
           <div class="tag-row">
             <span class="tag">React 19</span>
@@ -501,8 +491,8 @@
             <span class="tag">OpenStreetMap</span>
           </div>
           <div class="card-links">
-            <a href="https://github.com/dipanr705-12/local-events-map" target="_blank" class="link-btn link-live">ðŸš€ View on GitHub</a>
-            <span class="link-btn link-dead">ðŸ”„ Deploying to Render...</span>
+            <a href="https://github.com/dipanr705-12/local-events-map" target="_blank" class="link-btn link-live"> View on GitHub</a>
+            <span class="link-btn link-dead"> Deploying to Render...</span>
           </div>
         </div>
       </div>
@@ -510,7 +500,7 @@
       <!-- Project 2 - WHATSAPP BOT -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#065f46,#059669);">ðŸ’¬</div>
+          <div class="card-icon" style="background: linear-gradient(135deg,#065f46,#059669);">CHAT</div>
           <span class="card-number">02</span>
         </div>
         <div class="card-body">
@@ -533,11 +523,11 @@
       <!-- Project 3 - WINTER GUIDANCE -->
       <div class="card">
         <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#1e3a5f,#0ea5e9);">â„ï¸</div>
+          <div class="card-icon" style="background: linear-gradient(135deg,#1e3a5f,#0ea5e9);">WINTER</div>
           <span class="card-number">03</span>
         </div>
         <div class="card-body">
-          <h3>Winter Guidance â€” My First Web Project</h3>
+          <h3>Winter Guidance - My First Web Project</h3>
           <p>My very first web project! A visually engaging winter season guide for India with animated snowflakes, seasonal tips, health advice, and weather information. Demonstrates HTML, CSS animations, and responsive design fundamentals.</p>
           <div class="tag-row">
             <span class="tag">HTML5</span>
@@ -559,7 +549,7 @@
 
   <div class="divider"></div>
 
-  <!-- â•â•â• SKILLS â•â•â• -->
+  <!-- === SKILLS === -->
   <div class="section">
     <p class="section-title">// tech stack</p>
     <h2 class="section-heading">Skills &amp; Technologies</h2>
@@ -568,24 +558,15 @@
       <div class="skill-card">
         <h4>Frontend</h4>
         <div class="skill-list">
-          <span class="skill-pill">React 19</span>
-          <span class="skill-pill">Vite</span>
-          <span class="skill-pill">Tailwind CSS</span>
           <span class="skill-pill">HTML5</span>
           <span class="skill-pill">CSS3</span>
-          <span class="skill-pill">Leaflet</span>
           <span class="skill-pill">JavaScript</span>
         </div>
       </div>
       <div class="skill-card">
         <h4>Backend</h4>
         <div class="skill-list">
-          <span class="skill-pill">Node.js</span>
-          <span class="skill-pill">Express</span>
           <span class="skill-pill">Python</span>
-          <span class="skill-pill">REST APIs</span>
-          <span class="skill-pill">SQLite</span>
-          <span class="skill-pill">dotenv</span>
         </div>
       </div>
       <div class="skill-card">
@@ -615,10 +596,10 @@
 
   <div class="divider"></div>
 
-  <!-- â•â•â• CONTACT â•â•â• -->
+  <!-- === CONTACT === -->
   <div class="section">
     <div class="contact-bar">
-      <h2>Let's Connect! ðŸ¤</h2>
+      <h2>Let's Connect! </h2>
       <p>Open to opportunities, collaborations, and interesting projects.</p>
       <div class="hero-links">
         <a href="https://dipanr705-12.github.io/my-portfolio/" target="_blank" class="btn btn-primary">View Full Portfolio</a>
@@ -628,9 +609,9 @@
     </div>
   </div>
 
-  <!-- â•â•â• FOOTER â•â•â• -->
+  <!-- === FOOTER === -->
   <footer>
-    Built with â¤ï¸ by <a href="https://github.com/dipanr705-12">Dipan Roy</a> &nbsp;Â·&nbsp; ECE Engineer &amp; Full Stack Developer
+    Built by <a href="https://github.com/dipanr705-12">Dipan Roy</a>
   </footer>
 
 </body>
