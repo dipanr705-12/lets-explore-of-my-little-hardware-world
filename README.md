@@ -1,4 +1,4 @@
-# CIRCUITR // Hardware Engineering Project Hub
+# Let's Explore of My Little Hardware World
 
 > **Live Website:** [https://dipanr705-12.github.io/showcase/](https://dipanr705-12.github.io/showcase/)
 
