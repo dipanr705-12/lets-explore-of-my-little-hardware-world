@@ -1,9 +1,9 @@
 # Let's Explore of My Little Hardware World
 
-> **Live Website:** [https://dipanr705-12.github.io/showcase/](https://dipanr705-12.github.io/showcase/)
+> **Live Website:** [https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-06b6d4?style=for-the-badge&logo=github)](https://dipanr705-12.github.io/showcase/)
-[![Status](https://img.shields.io/badge/Status-Active-emerald?style=for-the-badge)](https://dipanr705-12.github.io/showcase/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-06b6d4?style=for-the-badge&logo=github)](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
+[![Status](https://img.shields.io/badge/Status-Active-emerald?style=for-the-badge)](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
 
 A modern, responsive web application designed for hardware makers, embedded engineers, and electronics hobbyists to upload, showcase, and archive their hardware projects, workbench photos, circuit schematics, source firmware, and step-by-step fabrication workflows.
 
@@ -12,7 +12,7 @@ A modern, responsive web application designed for hardware makers, embedded engi
 ## 🌐 Live Access
 
 Visit the live site directly in your browser:
-### 🔗 [https://dipanr705-12.github.io/showcase/](https://dipanr705-12.github.io/showcase/)
+### 🔗 [https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
 
 *(Hosted 24/7 on GitHub Pages — works anywhere, on any device, without requiring a local server).*
 
@@ -45,8 +45,8 @@ You can also run it locally on your computer:
 
 ```bash
 # Clone the repository
-git clone https://github.com/dipanr705-12/showcase.git
-cd showcase
+git clone https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world.git
+cd lets-explore-of-my-little-hardware-world
 
 # Start with Node.js
 node server.js
