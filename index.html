@@ -1,618 +1,453 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dipan Roy - Projects Showcase</title>
-  <meta name="description" content="Dipan Roy. Projects showcase for interview." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0a0f1e;
-      --bg2: #0f1628;
-      --card: #131929;
-      --border: #1e2d4a;
-      --accent: #4f8ef7;
-      --accent2: #7c3aed;
-      --accent3: #06d6a0;
-      --text: #e2e8f0;
-      --muted: #7a8fab;
-      --glow: rgba(79,142,247,0.15);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HardwareLab // Project Hub & Showcase</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Highlight.js for code snippets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/arduino.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hw: {
+              bg: '#0a0d14',
+              surface: '#111726',
+              card: '#161f36',
+              border: '#233054',
+              accent: '#06b6d4',      // cyan
+              accentHover: '#0891b2',
+              glow: '#00f2fe',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              purple: '#8b5cf6'
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace']
+          }
+        }
+      }
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* Animated background grid */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* -- HERO -- */
-    .hero {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 80px 24px 60px;
-      overflow: hidden;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: -120px; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .avatar {
-      width: 100px; height: 100px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 40px;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 40px rgba(79,142,247,0.4);
-      animation: pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 40px rgba(79,142,247,0.4); }
-      50% { box-shadow: 0 0 60px rgba(79,142,247,0.7); }
-    }
-
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 12px;
-      letter-spacing: -0.02em;
-    }
-
-    .hero .role {
-      font-size: 1.15rem;
-      color: var(--muted);
-      margin-bottom: 20px;
-      font-weight: 400;
-    }
-
-    .hero .role span {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .badge-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-    }
-
-    .badge {
-      background: rgba(79,142,247,0.1);
-      border: 1px solid rgba(79,142,247,0.3);
-      color: var(--accent);
-      padding: 6px 14px;
-      border-radius: 100px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      font-family: 'Fira Code', monospace;
-    }
-
-    .hero-links {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      box-shadow: 0 4px 20px rgba(79,142,247,0.3);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(79,142,247,0.5);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-2px);
-    }
-
-    /* -- SECTION -- */
-    .section {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px 80px;
-    }
-
-    .section-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-family: 'Fira Code', monospace;
-      margin-bottom: 8px;
-    }
-
-    .section-heading {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 40px;
-    }
-
-    /* -- PROJECTS GRID -- */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.3s;
-      position: relative;
-    }
-
-    .card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(79,142,247,0.2);
-    }
-
-    .card-header {
-      padding: 24px 24px 0;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .card-icon {
-      width: 52px; height: 52px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-    }
-
-    .card-number {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-weight: 400;
-    }
-
-    .card-body { padding: 16px 24px 24px; }
-
-    .card-body h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-
-    .card-body p {
-      font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 18px;
-    }
-
-    .tag-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .tag {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-family: 'Fira Code', monospace;
-    }
-
-    .card-links {
-      display: flex;
-      gap: 10px;
-    }
-
-    .link-btn {
-      flex: 1;
-      text-align: center;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
-    }
-
-    .link-live {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      border-color: transparent;
-    }
-
-    .link-live:hover { opacity: 0.9; transform: translateY(-1px); }
-
-    .link-github {
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .link-github:hover { color: var(--text); border-color: var(--accent); }
-
-    .link-dead {
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
-      cursor: default;
-      opacity: 0.6;
-      font-style: italic;
-    }
-
-    /* FEATURED card */
-    .card-featured {
-      grid-column: 1 / -1;
-      border-color: rgba(79,142,247,0.4);
-      background: linear-gradient(135deg, var(--card) 0%, rgba(79,142,247,0.05) 100%);
-    }
-
-    .card-featured .card-body h3 { font-size: 1.3rem; }
-
-    .featured-badge {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 100px;
-      letter-spacing: 0.05em;
-    }
-
-    /* -- SKILLS -- */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-
-    .skill-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      transition: border-color 0.2s;
-    }
-
-    .skill-card:hover { border-color: var(--accent); }
-
-    .skill-card h4 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-      font-family: 'Fira Code', monospace;
-    }
-
-    .skill-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .skill-pill {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-    }
-
-    /* -- CONTACT -- */
-    .contact-bar {
-      background: linear-gradient(135deg, rgba(79,142,247,0.1), rgba(124,58,237,0.1));
-      border: 1px solid rgba(79,142,247,0.2);
-      border-radius: 20px;
-      padding: 48px 32px;
-      text-align: center;
-    }
-
-    .contact-bar h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .contact-bar p { color: var(--muted); margin-bottom: 28px; }
-
-    /* -- STATUS DOTS -- */
-    .status-live::before {
-      content: '';
-      display: inline-block;
-      width: 8px; height: 8px;
-      background: var(--accent3);
-      border-radius: 50%;
-      margin-right: 6px;
-      animation: blink 2s ease-in-out infinite;
-    }
-
-    .status-down::before {
-      content: '';
-      display: inline-block;
-      width: 8px; height: 8px;
-      background: #ef4444;
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    /* -- DIVIDER -- */
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
-      margin: 0 24px 60px;
-    }
-
-    /* -- FOOTER -- */
-    footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 32px 24px;
-      color: var(--muted);
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border);
-    }
-
-    footer a { color: var(--accent); text-decoration: none; }
-
-    /* -- RESPONSIVE -- */
-    @media (max-width: 600px) {
-      .hero { padding: 60px 16px 40px; }
-      .card-featured { grid-column: auto; }
-      .contact-bar { padding: 32px 20px; }
-    }
-  </style>
+  </script>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-hw-bg text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
 
-  <!-- === HERO === -->
-  <section class="hero">
-    <div class="avatar">DR</div>
-    <h1>Dipan Roy</h1>
-    <div class="hero-links">
-      <a href="https://dipanr705-12.github.io/my-portfolio/" target="_blank" class="btn btn-primary">
-         Main Portfolio
-      </a>
-      <a href="https://dipanroy.netlify.app" target="_blank" class="btn btn-outline">
-         Alt Portfolio
-      </a>
-      <a href="https://github.com/dipanr705-12" target="_blank" class="btn btn-outline">
-         GitHub
-      </a>
+  <!-- Top Navigation -->
+  <header class="sticky top-0 z-40 bg-hw-surface/90 backdrop-blur-md border-b border-hw-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateHome()">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-[2px] flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <div class="w-full h-full bg-hw-bg rounded-[10px] flex items-center justify-center">
+            <i data-lucide="cpu" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">CIRCUITR</span>
+          <span class="text-xs px-2 py-0.5 ml-1.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/60 font-mono">LAB v1.0</span>
+        </div>
+      </div>
+
+      <!-- Quick Search & Actions -->
+      <div class="flex items-center space-x-3">
+        <div class="relative hidden sm:block w-64 md:w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search projects, parts, tags..." 
+            class="w-full bg-hw-card border border-hw-border rounded-lg pl-9 pr-4 py-1.5 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"
+          >
+        </div>
+
+        <button 
+          id="btnExportData" 
+          title="Backup projects (JSON)" 
+          class="p-2 rounded-lg bg-hw-card border border-hw-border hover:border-slate-500 text-slate-300 hover:text-white transition"
+        >
+          <i data-lucide="download" class="w-4 h-4"></i>
+        </button>
+
+        <label 
+          title="Import projects (JSON)" 
+          class="p-2 rounded-lg bg-hw-card border border-hw-border hover:border-slate-500 text-slate-300 hover:text-white cursor-pointer transition"
+        >
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          <input type="file" id="importFileInput" accept=".json" class="hidden">
+        </label>
+
+        <button 
+          id="btnNewProject" 
+          class="flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-semibold px-4 py-2 rounded-lg shadow-lg shadow-cyan-500/25 transition transform active:scale-95 text-sm"
+        >
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Upload Project</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden border-b border-hw-border/60 bg-gradient-to-b from-hw-surface via-hw-bg to-hw-bg py-10 px-4 sm:px-6">
+    <div class="circuit-grid-pattern absolute inset-0 opacity-15 pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono mb-3">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span>HARDWARE BUILD ARCHIVE & WORKFLOW REPOSITORY</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+            My Hardware Engineering Workspace
+          </h1>
+          <p class="mt-2 text-slate-400 text-sm sm:text-base max-w-2xl">
+            Document, showcase, and track prototypes, custom PCBs, microcontrollers, schematics, source firmware, and step-by-step fabrication logs.
+          </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 shrink-0">
+          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
+            <div id="statTotalProjects" class="text-2xl font-bold font-mono text-cyan-400">0</div>
+            <div class="text-xs text-slate-400 mt-0.5">Projects</div>
+          </div>
+          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
+            <div id="statTotalComponents" class="text-2xl font-bold font-mono text-emerald-400">0</div>
+            <div class="text-xs text-slate-400 mt-0.5">Parts in BOM</div>
+          </div>
+          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
+            <div id="statTotalWorkflows" class="text-2xl font-bold font-mono text-purple-400">0</div>
+            <div class="text-xs text-slate-400 mt-0.5">Build Steps</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories & Filters -->
+      <div class="mt-8 flex flex-wrap items-center gap-2" id="categoryFilterContainer">
+        <!-- Dynamically rendered category pills -->
+      </div>
     </div>
   </section>
 
-  <!-- === PROJECTS === -->
-  <div class="section">
-    <p class="section-title">// my work</p>
-    <h2 class="section-heading">Featured Projects</h2>
-
-    <div class="projects-grid">
-
-      <!-- Project 1 - LOCAL EVENTS MAP (FEATURED) -->
-      <div class="card card-featured">
-        <span class="featured-badge">FEATURED</span>
-        <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#1e40af,#7c3aed);">MAP</div>
-          <span class="card-number">01</span>
-        </div>
-        <div class="card-body">
-          <h3>Local Events India - Interactive Map & Discovery</h3>
-          <p>A full-stack web app for discovering and sharing local events across India. Features an interactive Leaflet map, 42+ Durga Puja pandals directory with GPS coordinates, rich filtering by city/category/date/distance, "Near Me" geolocation, event hosting form with live map picker, Google Calendar integration, and favorites. Built with React 19, Vite, Tailwind CSS, Node.js, Express, and native SQLite (Node 22+).</p>
-          <div class="tag-row">
-            <span class="tag">React 19</span>
-            <span class="tag">Vite</span>
-            <span class="tag">Tailwind CSS v4</span>
-            <span class="tag">Node.js</span>
-            <span class="tag">Express</span>
-            <span class="tag">SQLite</span>
-            <span class="tag">Leaflet</span>
-            <span class="tag">OpenStreetMap</span>
-          </div>
-          <div class="card-links">
-            <a href="https://github.com/dipanr705-12/local-events-map" target="_blank" class="link-btn link-live"> View on GitHub</a>
-            <span class="link-btn link-dead"> Deploying to Render...</span>
-          </div>
-        </div>
+  <!-- Main Projects Feed Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="homeView">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-2">
+        <h2 class="text-lg font-semibold text-slate-200">Projects Portfolio</h2>
+        <span id="filteredCountBadge" class="text-xs font-mono px-2 py-0.5 rounded bg-hw-card border border-hw-border text-slate-400"></span>
       </div>
 
-      <!-- Project 2 - WHATSAPP BOT -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#065f46,#059669);">CHAT</div>
-          <span class="card-number">02</span>
-        </div>
-        <div class="card-body">
-          <h3>WhatsApp AI Bot</h3>
-          <p>An intelligent WhatsApp bot deployed on Render. Automates responses, handles user queries, and integrates with external APIs to provide real-time assistance via WhatsApp messaging.</p>
-          <div class="tag-row">
-            <span class="tag">Node.js</span>
-            <span class="tag">WhatsApp API</span>
-            <span class="tag">Render</span>
-            <span class="tag">REST API</span>
+      <div class="flex items-center space-x-2 text-xs">
+        <label for="sortSelector" class="text-slate-400">Sort by:</label>
+        <select id="sortSelector" class="bg-hw-card border border-hw-border rounded-md px-2.5 py-1 text-slate-200 focus:outline-none focus:border-cyan-400">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="title">Project Name</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injected by app.js -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-hw-border rounded-2xl bg-hw-surface/30">
+      <div class="w-16 h-16 rounded-full bg-hw-card flex items-center justify-center text-slate-500 mb-4 border border-hw-border">
+        <i data-lucide="layers" class="w-8 h-8"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-slate-300">No hardware projects found</h3>
+      <p class="text-sm text-slate-400 max-w-sm mt-1 mb-6">Start building your portfolio by uploading your first microcontroller or circuit project.</p>
+      <button onclick="openProjectModal()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-medium rounded-lg text-sm flex items-center space-x-2">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span>Add Your First Project</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Single Project Detailed View (Full page view) -->
+  <section id="detailView" class="hidden flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+    <!-- Back Button & Actions -->
+    <div class="flex items-center justify-between mb-6">
+      <button onclick="navigateHome()" class="flex items-center space-x-2 text-sm text-slate-400 hover:text-cyan-400 transition">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        <span>Back to Projects</span>
+      </button>
+
+      <div class="flex items-center space-x-2" id="detailHeaderActions">
+        <!-- Edit & Delete buttons filled dynamically -->
+      </div>
+    </div>
+
+    <div id="detailContent">
+      <!-- Populated dynamically by app.js -->
+    </div>
+  </section>
+
+  <!-- Upload / Edit Project Modal -->
+  <div id="projectModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-hw-surface border border-hw-border rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-hw-border flex items-center justify-between bg-hw-card/60">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/20">
+            <i data-lucide="circuit-board" class="w-5 h-5"></i>
           </div>
-          <div class="card-links">
-            <a href="https://whatsapp-bot-7u6g.onrender.com/" target="_blank" class="link-btn link-live">
-              <span class="status-live"></span>Live Demo
-            </a>
+          <div>
+            <h3 id="modalTitle" class="text-lg font-bold text-white">Upload Hardware Project</h3>
+            <p class="text-xs text-slate-400">Fill in specs, photos, code snippets, and build logs.</p>
           </div>
         </div>
+        <button onclick="closeProjectModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
 
-      <!-- Project 3 - WINTER GUIDANCE -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon" style="background: linear-gradient(135deg,#1e3a5f,#0ea5e9);">WINTER</div>
-          <span class="card-number">03</span>
-        </div>
-        <div class="card-body">
-          <h3>Winter Guidance - My First Web Project</h3>
-          <p>My very first web project! A visually engaging winter season guide for India with animated snowflakes, seasonal tips, health advice, and weather information. Demonstrates HTML, CSS animations, and responsive design fundamentals.</p>
-          <div class="tag-row">
-            <span class="tag">HTML5</span>
-            <span class="tag">CSS3</span>
-            <span class="tag">Animations</span>
-            <span class="tag">Responsive</span>
-            <span class="tag">Netlify</span>
-          </div>
-          <div class="card-links">
-            <a href="https://sparkling-macaron-78a7c6.netlify.app/" target="_blank" class="link-btn link-live">
-              <span class="status-live"></span>Live Demo
-            </a>
-          </div>
-        </div>
+      <!-- Modal Tabs for Easy Section Organization -->
+      <div class="border-b border-hw-border px-6 flex space-x-6 text-sm bg-hw-bg/50 overflow-x-auto">
+        <button type="button" class="modal-tab active py-3 border-b-2 font-medium flex items-center space-x-2 transition" data-tab="tab-overview">
+          <i data-lucide="info" class="w-4 h-4"></i>
+          <span>1. Overview & Photos</span>
+        </button>
+        <button type="button" class="modal-tab py-3 border-b-2 font-medium flex items-center space-x-2 text-slate-400 border-transparent hover:text-slate-200 transition" data-tab="tab-bom">
+          <i data-lucide="list-checks" class="w-4 h-4"></i>
+          <span>2. Parts & BOM</span>
+        </button>
+        <button type="button" class="modal-tab py-3 border-b-2 font-medium flex items-center space-x-2 text-slate-400 border-transparent hover:text-slate-200 transition" data-tab="tab-code">
+          <i data-lucide="code-2" class="w-4 h-4"></i>
+          <span>3. Firmware & Code</span>
+        </button>
+        <button type="button" class="modal-tab py-3 border-b-2 font-medium flex items-center space-x-2 text-slate-400 border-transparent hover:text-slate-200 transition" data-tab="tab-workflow">
+          <i data-lucide="git-merge" class="w-4 h-4"></i>
+          <span>4. Build Workflow</span>
+        </button>
       </div>
+
+      <!-- Modal Body (Form) -->
+      <form id="projectForm" class="p-6 overflow-y-auto space-y-6 flex-1 text-sm">
+        <input type="hidden" id="editingProjectId" value="">
+
+        <!-- TAB 1: OVERVIEW & PHOTOS -->
+        <div id="tab-overview" class="modal-tab-content space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Project Title *</label>
+              <input type="text" id="formTitle" required placeholder="e.g., ESP32 Autonomous Indoor Rover" class="w-full bg-hw-card border border-hw-border rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Category *</label>
+              <select id="formCategory" class="w-full bg-hw-card border border-hw-border rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-cyan-400">
+                <option value="IoT & Sensors">IoT & Sensors</option>
+                <option value="Robotics">Robotics & Automation</option>
+                <option value="PCB & Circuits">Custom PCB & Circuits</option>
+                <option value="Embedded Systems">Embedded Systems (STM32/RP2040)</option>
+                <option value="Wearables & Audio">Wearables & Audio</option>
+                <option value="3D Printing & Enclosures">3D Printing & Enclosures</option>
+                <option value="FPGA & High Speed">FPGA & High Speed</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Short Tagline / Summary *</label>
+            <input type="text" id="formTagline" required placeholder="e.g., Wi-Fi controlled dual-motor robot with ultrasonic obstacle avoidance and telemetry." class="w-full bg-hw-card border border-hw-border rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-cyan-400">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Build Status</label>
+              <select id="formStatus" class="w-full bg-hw-card border border-hw-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+                <option value="Completed">Completed</option>
+                <option value="Prototype">In Prototype Phase</option>
+                <option value="In Progress">Work in Progress</option>
+                <option value="Archived">Archived / Legacy</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">MCU / Processor</label>
+              <input type="text" id="formMcu" placeholder="e.g. ESP32-WROOM-32D / RP2040" class="w-full bg-hw-card border border-hw-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Date Completed / Created</label>
+              <input type="date" id="formDate" class="w-full bg-hw-card border border-hw-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-cyan-400">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Tags (comma separated)</label>
+            <input type="text" id="formTags" placeholder="ESP32, C++, KiCad, FreeCAD, MQTT, L298N" class="w-full bg-hw-card border border-hw-border rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-cyan-400">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Full Description & Architecture</label>
+            <textarea id="formDescription" rows="4" placeholder="Detail the architecture, power rails, communication protocols (SPI/I2C/UART), and operational goals..." class="w-full bg-hw-card border border-hw-border rounded-lg p-3 text-white focus:outline-none focus:border-cyan-400"></textarea>
+          </div>
+
+          <!-- Photos Section -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">Project Photos & Circuit Diagrams</label>
+              <span class="text-xs text-slate-400">Multiple files supported (PNG, JPG, WebP)</span>
+            </div>
+
+            <!-- Drag & Drop Upload Zone -->
+            <div id="dropZone" class="border-2 border-dashed border-hw-border hover:border-cyan-400/70 rounded-xl p-5 text-center bg-hw-card/40 cursor-pointer transition">
+              <input type="file" id="photoFileInput" multiple accept="image/*" class="hidden">
+              <div class="flex flex-col items-center justify-center space-y-2 pointer-events-none">
+                <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                  <i data-lucide="image-plus" class="w-5 h-5"></i>
+                </div>
+                <div class="text-slate-300 font-medium">Click to upload photos or drag & drop</div>
+                <div class="text-xs text-slate-400">Photos will be saved and rendered right in your browser gallery</div>
+              </div>
+            </div>
+
+            <!-- Or add image URL -->
+            <div class="flex items-center space-x-2 mt-2">
+              <input type="url" id="photoUrlInput" placeholder="Or paste direct image URL (e.g. Unsplash, Imgur, GitHub raw)" class="flex-1 bg-hw-card border border-hw-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+              <button type="button" onclick="addPhotoFromUrl()" class="px-3 py-1.5 bg-hw-card border border-hw-border hover:border-slate-500 rounded-lg text-xs font-medium text-slate-200">Add URL</button>
+            </div>
+
+            <!-- Photos preview grid -->
+            <div id="photosPreviewList" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+              <!-- previews inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: BILL OF MATERIALS (BOM) -->
+        <div id="tab-bom" class="modal-tab-content space-y-4 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-semibold text-slate-200">Bill of Materials (BOM)</h4>
+              <p class="text-xs text-slate-400">List all resistors, ICs, sensors, batteries, modules, and hardware fasteners.</p>
+            </div>
+            <button type="button" onclick="addBomRow()" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 text-xs font-medium flex items-center space-x-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Add Component</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-hw-border bg-hw-card/40">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-hw-surface border-b border-hw-border text-slate-400 font-mono">
+                <tr>
+                  <th class="p-3">Component / Part</th>
+                  <th class="p-3 w-20">Qty</th>
+                  <th class="p-3">Designator / Ref</th>
+                  <th class="p-3">Supplier / Link</th>
+                  <th class="p-3 w-12 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="bomTableBody" class="divide-y divide-hw-border/60">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 3: FIRMWARE & CODE -->
+        <div id="tab-code" class="modal-tab-content space-y-4 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-semibold text-slate-200">Firmware & Software Code</h4>
+              <p class="text-xs text-slate-400">Paste your Arduino (.ino), C++, MicroPython, or platformio code snippets.</p>
+            </div>
+            <button type="button" onclick="addCodeSnippetRow()" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 text-xs font-medium flex items-center space-x-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Add Code File</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">GitHub / Git Repository URL</label>
+              <input type="url" id="formGithubUrl" placeholder="https://github.com/yourusername/hardware-project" class="w-full bg-hw-card border border-hw-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">Schematics / CAD Link (KiCad / EasyEDA / Onshape)</label>
+              <input type="url" id="formCadUrl" placeholder="https://oshwlab.com/... or Google Drive link" class="w-full bg-hw-card border border-hw-border rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-cyan-400">
+            </div>
+          </div>
+
+          <div id="codeSnippetsContainer" class="space-y-4">
+            <!-- Dynamically populated code blocks -->
+          </div>
+        </div>
+
+        <!-- TAB 4: BUILD WORKFLOW -->
+        <div id="tab-workflow" class="modal-tab-content space-y-4 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="font-semibold text-slate-200">Step-by-Step Workflow & Build Log</h4>
+              <p class="text-xs text-slate-400">Chronicle how you soldered, calibrated, tested, and assembled this project.</p>
+            </div>
+            <button type="button" onclick="addWorkflowStepRow()" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 text-xs font-medium flex items-center space-x-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Add Build Step</span>
+            </button>
+          </div>
+
+          <div id="workflowStepsContainer" class="space-y-4">
+            <!-- Dynamically populated workflow steps -->
+          </div>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="border-t border-hw-border pt-4 flex items-center justify-between">
+          <div class="text-xs text-slate-400 flex items-center space-x-1">
+            <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Saved securely in your browser's persistent database</span>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <button type="button" onclick="closeProjectModal()" class="px-4 py-2 rounded-lg border border-hw-border hover:bg-slate-800 text-slate-300 text-xs font-medium transition">
+              Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition">
+              Save Project
+            </button>
+          </div>
+        </div>
+      </form>
 
     </div>
   </div>
 
-  <div class="divider"></div>
-
-  <!-- === SKILLS === -->
-  <div class="section">
-    <p class="section-title">// tech stack</p>
-    <h2 class="section-heading">Skills &amp; Technologies</h2>
-
-    <div class="skills-grid">
-      <div class="skill-card">
-        <h4>Frontend</h4>
-        <div class="skill-list">
-          <span class="skill-pill">HTML5</span>
-          <span class="skill-pill">CSS3</span>
-          <span class="skill-pill">JavaScript</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <h4>Backend</h4>
-        <div class="skill-list">
-          <span class="skill-pill">Python</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <h4>DevOps & Tools</h4>
-        <div class="skill-list">
-          <span class="skill-pill">Git</span>
-          <span class="skill-pill">GitHub</span>
-          <span class="skill-pill">Netlify</span>
-          <span class="skill-pill">Render</span>
-          <span class="skill-pill">GitHub Pages</span>
-          <span class="skill-pill">VS Code</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <h4>ECE / Hardware</h4>
-        <div class="skill-list">
-          <span class="skill-pill">Microcontrollers</span>
-          <span class="skill-pill">Arduino</span>
-          <span class="skill-pill">IoT</span>
-          <span class="skill-pill">Robotics</span>
-          <span class="skill-pill">Electronics</span>
-          <span class="skill-pill">Circuit Design</span>
-        </div>
-      </div>
-    </div>
+  <!-- Image Lightbox Modal -->
+  <div id="lightboxModal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md flex items-center justify-center p-4" onclick="closeLightbox()">
+    <button class="absolute top-4 right-4 text-slate-400 hover:text-white p-2">
+      <i data-lucide="x" class="w-8 h-8"></i>
+    </button>
+    <img id="lightboxImg" src="" alt="Enlarged view" class="max-w-[95vw] max-h-[90vh] object-contain rounded-lg shadow-2xl border border-hw-border" onclick="event.stopPropagation()">
   </div>
 
-  <div class="divider"></div>
-
-  <!-- === CONTACT === -->
-  <div class="section">
-    <div class="contact-bar">
-      <h2>Let's Connect! </h2>
-      <p>Open to opportunities, collaborations, and interesting projects.</p>
-      <div class="hero-links">
-        <a href="https://dipanr705-12.github.io/my-portfolio/" target="_blank" class="btn btn-primary">View Full Portfolio</a>
-        <a href="https://github.com/dipanr705-12" target="_blank" class="btn btn-outline">GitHub Profile</a>
-        <a href="https://dipanroy.netlify.app" target="_blank" class="btn btn-outline">Alt Portfolio</a>
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-hw-border/80 bg-hw-surface py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+        <span class="text-slate-400 font-mono">CIRCUITR Hardware Lab Hub</span>
       </div>
+      <div>Designed for Makers, Electrical Engineers, Robotics Builders & Embedded Coders</div>
+      <div class="font-mono text-cyan-400/80">Local-First Storage Enabled</div>
     </div>
-  </div>
-
-  <!-- === FOOTER === -->
-  <footer>
-    Built by <a href="https://github.com/dipanr705-12">Dipan Roy</a>
   </footer>
 
+  <script src="app.js"></script>
 </body>
 </html>

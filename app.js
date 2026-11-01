@@ -1,0 +1,1345 @@
+/**
+ * CIRCUITR - Hardware Lab Project Hub
+ * Robust Local-First Hardware Portfolio & Documentation App
+ */
+
+// Global State
+let projects = [];
+let activeCategory = 'All';
+let currentSearchQuery = '';
+let currentSort = 'newest';
+let viewingProjectId = null;
+
+// Temporary staging in the modal
+let modalPhotos = [];
+let modalBom = [];
+let modalCodeSnippets = [];
+let modalWorkflowSteps = [];
+
+// Sample Seed Data for Instant Exploration
+const SEED_PROJECTS = [
+  {
+    id: 'proj_esp32_rover',
+    title: 'Autonomous LiDAR Navigation Rover',
+    tagline: 'Dual BLDC indoor SLAM rover powered by ESP32-S3 and RPLiDAR A1 with FreeRTOS multitasking.',
+    category: 'Robotics',
+    status: 'Completed',
+    mcu: 'ESP32-S3 WROOM-1',
+    date: '2026-09-15',
+    tags: ['ESP32', 'Robotics', 'LiDAR', 'FreeRTOS', 'C++', 'SLAM', '3D Printing'],
+    description: `This autonomous ground vehicle performs indoor 2D SLAM (Simultaneous Localization and Mapping) and obstacle avoidance.
+    
+Powered by an ESP32-S3 dual-core microcontroller running FreeRTOS:
+- Core 0 parses high-frequency serial streams from the RPLiDAR A1 (8000 samples/sec).
+- Core 1 handles optical encoder feedback, dual PID velocity loops, and Wi-Fi WebSockets telemetry.
+The power train consists of two 12V metal gearmotors driven by an integrated DRV8871 H-bridge board, supplied by a 3S 18650 Li-ion battery pack with onboard BMS.`,
+    photos: [
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'ESP32-S3 Dev Module', qty: 1, ref: 'U1', link: 'https://espressif.com' },
+      { name: 'RPLiDAR A1 360° Laser Scanner', qty: 1, ref: 'LIDAR1', link: 'https://slamtec.com' },
+      { name: 'DRV8871 Dual H-Bridge Driver', qty: 2, ref: 'U2, U3', link: 'https://ti.com' },
+      { name: '12V DC Metal Gearmotor with Encoder', qty: 2, ref: 'M1, M2', link: 'https://pololu.com' },
+      { name: '3S 18650 Li-ion 11.1V 2600mAh Pack', qty: 1, ref: 'BAT1', link: '' },
+      { name: 'LM2596 DC-DC Step Down (5V/3A)', qty: 1, ref: 'VR1', link: '' }
+    ],
+    githubUrl: 'https://github.com/example/esp32-lidar-rover',
+    cadUrl: 'https://cad.onshape.com/example/rover-chassis-v2',
+    codeSnippets: [
+      {
+        fileName: 'lidar_task.cpp',
+        language: 'cpp',
+        code: `#include <Arduino.h>
+#include <RPLidar.h>
+
+#define LIDAR_RX 16
+#define LIDAR_TX 17
+#define LIDAR_MOTOR_PIN 18
+
+RPLidar lidar;
+
+void taskLiDAR(void *pvParameters) {
+    Serial1.begin(115200, SERIAL_8N1, LIDAR_RX, LIDAR_TX);
+    lidar.begin(Serial1);
+    pinMode(LIDAR_MOTOR_PIN, OUTPUT);
+    digitalWrite(LIDAR_MOTOR_PIN, HIGH); // Spin LiDAR head
+
+    for (;;) {
+        if (IS_OK(lidar.waitPoint())) {
+            float distance = lidar.getCurrentPoint().distance; // mm
+            float angle    = lidar.getCurrentPoint().angle;    // degrees
+            bool  startBit = lidar.getCurrentPoint().startBit;
+            
+            if (distance > 100.0 && distance < 6000.0) {
+                // Forward scan data to SLAM queue
+            }
+        }
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+}`
+      },
+      {
+        fileName: 'motor_pid.cpp',
+        language: 'cpp',
+        code: `// Dual channel PID loop for differential steering
+float Kp = 2.4, Ki = 0.12, Kd = 0.05;
+
+void computeMotorPID(float targetRPM, float currentRPM, int pwmPin) {
+    static float prevError = 0;
+    static float integral = 0;
+    
+    float error = targetRPM - currentRPM;
+    integral += error;
+    float derivative = error - prevError;
+    
+    float output = (Kp * error) + (Ki * integral) + (Kd * derivative);
+    output = constrain(output, 0, 255);
+    analogWrite(pwmPin, (int)output);
+    prevError = error;
+}`
+      }
+    ],
+    workflow: [
+      {
+        title: 'Chassis Modeling & 3D Printing',
+        description: 'Modeled differential drive chassis in CAD with vibration-dampened silicone grommets for the LiDAR mounting shelf. Sliced with PETG filament for rigidity and impact resistance.',
+        image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        title: 'Power Rail & Buck Converter Calibration',
+        description: 'Tuned LM2596 switching regulator to a clean 5.08V DC output. Verified low-ripple rail on oscilloscope during motor stall tests (max peak ripple under 45mV).',
+        image: ''
+      },
+      {
+        title: 'Hardware Interrupt & Encoder Tuning',
+        description: 'Wired Hall effect quadrature encoder lines to ESP32 interrupt pins (GPIO 34 & 35). Configured hardware timers for 50Hz control loop frequency.',
+        image: ''
+      },
+      {
+        title: 'Obstacle Avoidance & Web Telemetry',
+        description: 'Created an async web server on ESP32 streaming real-time 2D lidar polar charts over WebSockets at 15 FPS.',
+        image: ''
+      }
+    ]
+  },
+  {
+    id: 'proj_hydroponics_lora',
+    title: 'Solar LoRa Hydroponics Telemetry Hub',
+    tagline: 'Ultralow-power agricultural sensor node logging EC, pH, water temp, and sunlight over 12km LoRa.',
+    category: 'IoT & Sensors',
+    status: 'Completed',
+    mcu: 'RP2040 Pico + SX1262',
+    date: '2026-10-02',
+    tags: ['RP2040', 'LoRa', 'MicroPython', 'Sensors', 'Agriculture', 'Solar'],
+    description: `A weatherproof outdoor agricultural monitor for automated hydroponic greenhouses.
+    
+It measures water electrical conductivity (EC), pH probe readings, DS18B20 liquid temperature, and ambient humidity/temperature. Broadcasts encoded telemetry packets over SX1262 LoRa (868/915 MHz) back to an indoor base station up to 12km line-of-sight. Powered by a 2W monocrystalline solar cell and 2000mAh LiFePO4 battery.`,
+    photos: [
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'Raspberry Pi Pico (RP2040)', qty: 1, ref: 'MCU1', link: '' },
+      { name: 'Waveshare SX1262 LoRa Module', qty: 1, ref: 'MOD1', link: '' },
+      { name: 'Analog pH Sensor Kit (V2.0)', qty: 1, ref: 'SEN1', link: '' },
+      { name: 'DS18B20 Waterproof Temp Probe', qty: 1, ref: 'SEN2', link: '' },
+      { name: 'CN3791 MPPT Solar Charger Board', qty: 1, ref: 'CHG1', link: '' },
+      { name: '3.2V 2000mAh LiFePO4 Battery', qty: 1, ref: 'BAT1', link: '' }
+    ],
+    githubUrl: 'https://github.com/example/lora-hydro-monitor',
+    cadUrl: '',
+    codeSnippets: [
+      {
+        fileName: 'main.py',
+        language: 'python',
+        code: `import time
+from machine import Pin, ADC
+import sx1262
+
+# Sensor pin mapping
+ph_adc = ADC(Pin(26))
+temp_pin = Pin(22)
+
+lora = sx1262.SX1262(spi_bus=0, cs=17, reset=20, busy=2)
+lora.begin(freq=868.0, bw=125.0, sf=7, cr=5)
+
+def read_ph():
+    raw = ph_adc.read_u16()
+    voltage = (raw / 65535.0) * 3.3
+    # Calibrated two-point linear equation
+    ph_value = 7.0 - ((voltage - 1.65) / 0.18)
+    return round(ph_value, 2)
+
+while True:
+    current_ph = read_ph()
+    packet = f"PH:{current_ph};BATT:98%;STATUS:OK"
+    lora.send(packet.encode('utf-8'))
+    print("Transmitted:", packet)
+    time.sleep(300) # Deep sleep for 5 mins`
+      }
+    ],
+    workflow: [
+      {
+        title: 'Analog Signal Conditioning & Filtering',
+        description: 'Designed an active RC low-pass filter to isolate high-frequency switching noise from the solar converter board entering the high-impedance pH probe circuit.',
+        image: ''
+      },
+      {
+        title: 'Field Range & Antenna Matching',
+        description: 'Tested 1/4 wave tuned SMA antenna with ground plane. Verified consistent -108 dBm RSSI at 4.2 km distance through trees.',
+        image: ''
+      }
+    ]
+  },
+  {
+    id: 'proj_split_keyboard',
+    title: 'Ergonomic Split Mechanical Keyboard',
+    tagline: 'Custom 42-key ortholinear hot-swap PCB running QMK/Vial with per-key RGB and dual 128x32 OLEDs.',
+    category: 'PCB & Circuits',
+    status: 'Completed',
+    mcu: 'RP2040-Zero (x2)',
+    date: '2026-08-20',
+    tags: ['PCB', 'KiCad', 'RP2040', 'QMK', 'C', 'Mechanical Keyboard'],
+    description: `A custom-engineered ergonomic split keyboard with column stagger designed in KiCad.
+    
+Features:
+- Reversible PCB layout (the same PCB works for both left and right halves).
+- Kailh Choc V2 low-profile hot-swap switch sockets.
+- Dual SSD1306 0.91" OLED displays indicating active layer, typing WPM, and keymap status.
+- Inter-half communication handled via TRRS cable with duplex UART protocol.`,
+    photos: [
+      'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'Custom Reversible 2-Layer PCB', qty: 2, ref: 'PCB-L/R', link: '' },
+      { name: 'RP2040-Zero Controller', qty: 2, ref: 'U1, U2', link: '' },
+      { name: '1N4148W SOD-123 Diodes', qty: 42, ref: 'D1-D42', link: '' },
+      { name: 'Kailh Choc V2 Switches', qty: 42, ref: 'SW1-SW42', link: '' },
+      { name: '0.91" I2C OLED 128x32', qty: 2, ref: 'DISP1, DISP2', link: '' }
+    ],
+    githubUrl: 'https://github.com/example/split-ortho-qmk',
+    cadUrl: 'https://github.com/example/split-ortho-kicad',
+    codeSnippets: [
+      {
+        fileName: 'keymap.c',
+        language: 'cpp',
+        code: `#include QMK_KEYBOARD_H
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [0] = LAYOUT_split_3x6_3(
+        KC_TAB,  KC_Q, KC_W, KC_E, KC_R, KC_T,           KC_Y, KC_U, KC_I,    KC_O,   KC_P,    KC_BSPC,
+        KC_LCTL, KC_A, KC_S, KC_D, KC_F, KC_G,           KC_H, KC_J, KC_K,    KC_L,   KC_SCLN, KC_QUOT,
+        KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B,           KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_ESC,
+                         KC_LGUI, MO(1), KC_SPC,       KC_ENT, MO(2), KC_RALT
+    )
+};`
+      }
+    ],
+    workflow: [
+      {
+        title: 'KiCad Schematic & Trace Routing',
+        description: 'Designed schematic with diode matrix (anti-ghosting). Used 0.25mm trace widths with curved 45-degree chamfers and bottom copper ground pour for signal shielding.',
+        image: ''
+      },
+      {
+        title: 'SMD Solder Paste Stenciling & Hot Air Reflow',
+        description: 'Applied lead-free SAC305 solder paste using stainless steel laser-cut stencil. Mounted all 42 SOD-123 diodes and hot-air reflowed at 245°C.',
+        image: ''
+      }
+    ]
+  }
+];
+
+// Initialize Storage (LocalStorage with fallback)
+function initStorage() {
+  try {
+    const saved = localStorage.getItem('circuitr_projects');
+    if (saved) {
+      projects = JSON.parse(saved);
+    } else {
+      projects = [...SEED_PROJECTS];
+      saveProjects();
+    }
+  } catch (err) {
+    console.warn('LocalStorage load error, using default state:', err);
+    projects = [...SEED_PROJECTS];
+  }
+}
+
+function saveProjects() {
+  try {
+    localStorage.setItem('circuitr_projects', JSON.stringify(projects));
+  } catch (e) {
+    if (e.name === 'QuotaExceededError') {
+      alert('Local storage quota limit reached! Try reducing image file sizes or remove large photos.');
+    }
+    console.error('Storage error:', e);
+  }
+}
+
+// Categories definitions
+const CATEGORIES = [
+  'All',
+  'Robotics',
+  'IoT & Sensors',
+  'PCB & Circuits',
+  'Embedded Systems',
+  'Wearables & Audio',
+  '3D Printing & Enclosures',
+  'FPGA & High Speed'
+];
+
+// DOM elements
+const homeView = document.getElementById('homeView');
+const detailView = document.getElementById('detailView');
+const projectsGrid = document.getElementById('projectsGrid');
+const emptyState = document.getElementById('emptyState');
+const categoryFilterContainer = document.getElementById('categoryFilterContainer');
+const searchInput = document.getElementById('searchInput');
+const sortSelector = document.getElementById('sortSelector');
+const statTotalProjects = document.getElementById('statTotalProjects');
+const statTotalComponents = document.getElementById('statTotalComponents');
+const statTotalWorkflows = document.getElementById('statTotalWorkflows');
+const filteredCountBadge = document.getElementById('filteredCountBadge');
+
+// Modal Elements
+const projectModal = document.getElementById('projectModal');
+const projectForm = document.getElementById('projectForm');
+const modalTitle = document.getElementById('modalTitle');
+const editingProjectId = document.getElementById('editingProjectId');
+const photoFileInput = document.getElementById('photoFileInput');
+const dropZone = document.getElementById('dropZone');
+const photosPreviewList = document.getElementById('photosPreviewList');
+const bomTableBody = document.getElementById('bomTableBody');
+const codeSnippetsContainer = document.getElementById('codeSnippetsContainer');
+const workflowStepsContainer = document.getElementById('workflowStepsContainer');
+const lightboxModal = document.getElementById('lightboxModal');
+const lightboxImg = document.getElementById('lightboxImg');
+
+// App Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  initStorage();
+  setupEventListeners();
+  renderCategoryPills();
+  renderProjects();
+  updateStats();
+  lucide.createIcons();
+});
+
+// Setup Events
+function setupEventListeners() {
+  // Navigation & Search
+  searchInput.addEventListener('input', (e) => {
+    currentSearchQuery = e.target.value.toLowerCase().trim();
+    renderProjects();
+  });
+
+  sortSelector.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    renderProjects();
+  });
+
+  // Modal open
+  document.getElementById('btnNewProject').addEventListener('click', () => {
+    openProjectModal();
+  });
+
+  // Modal tabs
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      const targetTab = tab.getAttribute('data-tab');
+      switchModalTab(targetTab);
+    });
+  });
+
+  // Drag and Drop photos
+  dropZone.addEventListener('click', () => photoFileInput.click());
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-cyan-400', 'bg-cyan-950/20');
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-cyan-400', 'bg-cyan-950/20');
+  });
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-cyan-400', 'bg-cyan-950/20');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFilesUpload(e.dataTransfer.files);
+    }
+  });
+
+  photoFileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFilesUpload(e.target.files);
+    }
+  });
+
+  // Form submit
+  projectForm.addEventListener('submit', handleFormSubmit);
+
+  // Export / Import
+  document.getElementById('btnExportData').addEventListener('click', exportDataJson);
+  document.getElementById('importFileInput').addEventListener('change', handleImportFile);
+}
+
+// Category Pills
+function renderCategoryPills() {
+  categoryFilterContainer.innerHTML = CATEGORIES.map(cat => {
+    const isActive = cat === activeCategory;
+    const activeClasses = isActive
+      ? 'bg-cyan-500 text-slate-950 font-semibold shadow-md shadow-cyan-500/20'
+      : 'bg-hw-card text-slate-300 hover:text-white hover:bg-slate-800 border border-hw-border';
+    return `
+      <button 
+        onclick="selectCategory('${cat}')" 
+        class="px-3.5 py-1.5 rounded-lg text-xs transition duration-150 ${activeClasses}"
+      >
+        ${cat}
+      </button>
+    `;
+  }).join('');
+}
+
+function selectCategory(cat) {
+  activeCategory = cat;
+  renderCategoryPills();
+  renderProjects();
+}
+
+// Filtering & Sorting
+function getFilteredProjects() {
+  return projects.filter(p => {
+    const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+    const matchesSearch = !currentSearchQuery || 
+      p.title.toLowerCase().includes(currentSearchQuery) ||
+      p.tagline.toLowerCase().includes(currentSearchQuery) ||
+      (p.mcu && p.mcu.toLowerCase().includes(currentSearchQuery)) ||
+      (p.tags && p.tags.some(t => t.toLowerCase().includes(currentSearchQuery))) ||
+      (p.bom && p.bom.some(b => b.name.toLowerCase().includes(currentSearchQuery)));
+    return matchesCategory && matchesSearch;
+  }).sort((a, b) => {
+    if (currentSort === 'newest') return new Date(b.date || 0) - new Date(a.date || 0);
+    if (currentSort === 'oldest') return new Date(a.date || 0) - new Date(b.date || 0);
+    if (currentSort === 'title') return a.title.localeCompare(b.title);
+    return 0;
+  });
+}
+
+// Render Project Grid
+function renderProjects() {
+  const filtered = getFilteredProjects();
+  filteredCountBadge.textContent = `${filtered.length} of ${projects.length} projects`;
+
+  if (filtered.length === 0) {
+    projectsGrid.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+
+  projectsGrid.innerHTML = filtered.map(p => {
+    const coverPhoto = (p.photos && p.photos.length > 0) 
+      ? p.photos[0] 
+      : 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80';
+
+    const statusBadgeClass = getStatusBadgeClass(p.status);
+    const tagsHtml = (p.tags || []).slice(0, 3).map(t => 
+      `<span class="text-[11px] font-mono px-2 py-0.5 rounded bg-hw-bg/80 text-cyan-300 border border-cyan-900/60">${t}</span>`
+    ).join('');
+
+    const extraTagsCount = (p.tags && p.tags.length > 3) ? `<span class="text-[11px] text-slate-400">+${p.tags.length - 3}</span>` : '';
+
+    return `
+      <div class="project-card group bg-hw-card/90 border border-hw-border rounded-xl overflow-hidden flex flex-col cursor-pointer" onclick="viewProject('${p.id}')">
+        <!-- Card Image Thumbnail -->
+        <div class="relative h-48 w-full overflow-hidden bg-hw-surface">
+          <img 
+            src="${coverPhoto}" 
+            alt="${p.title}" 
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out"
+            loading="lazy"
+            onerror="this.src='https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80'"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-hw-card via-transparent to-transparent opacity-80"></div>
+          
+          <div class="absolute top-3 left-3">
+            <span class="text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full ${statusBadgeClass}">
+              ${p.status || 'Active'}
+            </span>
+          </div>
+
+          <div class="absolute top-3 right-3 flex items-center space-x-1.5">
+            ${p.photos && p.photos.length > 1 ? `
+              <span class="text-[11px] bg-black/60 backdrop-blur-md text-slate-200 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                <i data-lucide="camera" class="w-3 h-3"></i>
+                <span>${p.photos.length}</span>
+              </span>
+            ` : ''}
+            ${p.codeSnippets && p.codeSnippets.length > 0 ? `
+              <span class="text-[11px] bg-cyan-950/80 border border-cyan-800 text-cyan-300 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                <i data-lucide="code" class="w-3 h-3"></i>
+                <span>Code</span>
+              </span>
+            ` : ''}
+          </div>
+
+          ${p.mcu ? `
+            <div class="absolute bottom-2 left-3">
+              <span class="text-xs font-mono text-cyan-300 flex items-center space-x-1 drop-shadow-md">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+                <span>${p.mcu}</span>
+              </span>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Card Content -->
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">${p.category}</div>
+            <h3 class="font-bold text-base text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+              ${p.title}
+            </h3>
+            <p class="mt-2 text-xs text-slate-400 line-clamp-2 leading-relaxed">
+              ${p.tagline || p.description || 'Hardware project build details, code, and schematics.'}
+            </p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-hw-border/60">
+            <div class="flex flex-wrap items-center gap-1.5">
+              ${tagsHtml}
+              ${extraTagsCount}
+            </div>
+
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <span class="flex items-center space-x-1">
+                <i data-lucide="calendar" class="w-3 h-3"></i>
+                <span>${p.date || 'Recent'}</span>
+              </span>
+              <span class="text-cyan-400 flex items-center space-x-1 font-medium group-hover:translate-x-1 transition-transform">
+                <span>View Details</span>
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+function getStatusBadgeClass(status) {
+  switch (status) {
+    case 'Completed': return 'badge-completed';
+    case 'Prototype': return 'badge-prototype';
+    case 'In Progress': return 'badge-in-progress';
+    default: return 'badge-archived';
+  }
+}
+
+// Stats Calculation
+function updateStats() {
+  statTotalProjects.textContent = projects.length;
+  let totalParts = 0;
+  let totalSteps = 0;
+
+  projects.forEach(p => {
+    if (p.bom) totalParts += p.bom.length;
+    if (p.workflow) totalSteps += p.workflow.length;
+  });
+
+  statTotalComponents.textContent = totalParts;
+  statTotalWorkflows.textContent = totalSteps;
+}
+
+// Single Project View
+function viewProject(id) {
+  const p = projects.find(item => item.id === id);
+  if (!p) return;
+  viewingProjectId = id;
+
+  homeView.classList.add('hidden');
+  detailView.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Detail Header Actions (Edit / Delete / Export Markdown)
+  const detailHeaderActions = document.getElementById('detailHeaderActions');
+  detailHeaderActions.innerHTML = `
+    <button onclick="exportSingleProjectMarkdown('${p.id}')" class="px-3 py-1.5 rounded-lg bg-hw-card border border-hw-border hover:border-slate-500 text-xs text-slate-300 hover:text-white flex items-center space-x-1.5 transition">
+      <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+      <span>Export README</span>
+    </button>
+    <button onclick="openProjectModal('${p.id}')" class="px-3 py-1.5 rounded-lg bg-hw-card border border-hw-border hover:border-cyan-400 text-xs text-cyan-400 flex items-center space-x-1.5 transition">
+      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+      <span>Edit Project</span>
+    </button>
+    <button onclick="confirmDeleteProject('${p.id}')" class="px-3 py-1.5 rounded-lg bg-hw-card border border-hw-border hover:border-red-500 text-xs text-red-400 flex items-center space-x-1.5 transition">
+      <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+      <span>Delete</span>
+    </button>
+  `;
+
+  // Gallery Photos
+  const photos = p.photos && p.photos.length > 0 
+    ? p.photos 
+    : ['https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=1200&q=80'];
+
+  const photosGalleryHtml = photos.map((imgUrl, idx) => `
+    <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-hw-border bg-hw-surface h-48 md:h-64" onclick="openLightbox('${imgUrl}')">
+      <img src="${imgUrl}" alt="Project photo ${idx + 1}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
+      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+        <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-full flex items-center space-x-1">
+          <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+          <span>Click to Enlarge</span>
+        </span>
+      </div>
+    </div>
+  `).join('');
+
+  // Bill of Materials Rows
+  const bomRowsHtml = (p.bom && p.bom.length > 0)
+    ? p.bom.map((b, i) => `
+      <tr class="border-b border-hw-border/50 hover:bg-hw-card/40 transition">
+        <td class="p-3 font-medium text-slate-200">${b.name || 'Component'}</td>
+        <td class="p-3 text-cyan-400 font-mono">${b.qty || 1}</td>
+        <td class="p-3 font-mono text-slate-400">${b.ref || '-'}</td>
+        <td class="p-3">
+          ${b.link ? `<a href="${b.link}" target="_blank" rel="noopener" class="text-cyan-400 hover:underline flex items-center space-x-1"><i data-lucide="external-link" class="w-3 h-3"></i><span>Datasheet / Buy</span></a>` : '<span class="text-slate-400">N/A</span>'}
+        </td>
+      </tr>
+    `).join('')
+    : `<tr><td colspan="4" class="p-4 text-center text-slate-400">No components added to the Bill of Materials.</td></tr>`;
+
+  // Code Snippets Tabs & Viewer
+  let codeSnippetsHtml = '';
+  if (p.codeSnippets && p.codeSnippets.length > 0) {
+    codeSnippetsHtml = `
+      <div class="space-y-4">
+        ${p.codeSnippets.map((snip, index) => `
+          <div class="rounded-xl border border-hw-border overflow-hidden bg-hw-card">
+            <div class="px-4 py-2.5 bg-hw-surface border-b border-hw-border flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="file-code" class="w-4 h-4 text-cyan-400"></i>
+                <span class="font-mono text-xs font-semibold text-slate-200">${snip.fileName || `snippet_${index + 1}`}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-hw-card border border-hw-border text-slate-400 uppercase font-mono">${snip.language || 'code'}</span>
+              </div>
+              <button onclick="copyCode(this, ${index})" class="text-xs text-slate-400 hover:text-cyan-400 px-2.5 py-1 rounded bg-hw-card border border-hw-border hover:border-cyan-400/50 flex items-center space-x-1 transition">
+                <i data-lucide="copy" class="w-3 h-3"></i>
+                <span>Copy</span>
+              </button>
+            </div>
+            <pre class="overflow-x-auto"><code class="language-${snip.language || 'cpp'}">${escapeHtml(snip.code || '')}</code></pre>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    codeSnippetsHtml = `
+      <div class="p-8 text-center border border-dashed border-hw-border rounded-xl bg-hw-surface/30 text-slate-400 text-xs">
+        No code snippets uploaded for this project.
+      </div>
+    `;
+  }
+
+  // Workflow Build Log Steps
+  let workflowStepsHtml = '';
+  if (p.workflow && p.workflow.length > 0) {
+    workflowStepsHtml = `
+      <div class="relative pl-6 border-l-2 border-hw-border space-y-8 my-4 ml-2">
+        ${p.workflow.map((step, idx) => `
+          <div class="relative">
+            <!-- Step Pin -->
+            <div class="absolute -left-[31px] top-0 w-6 h-6 rounded-full bg-cyan-500 text-slate-950 font-mono font-bold text-xs flex items-center justify-center shadow-lg shadow-cyan-500/30">
+              ${idx + 1}
+            </div>
+
+            <div class="bg-hw-card/80 border border-hw-border rounded-xl p-5 hover:border-slate-500 transition">
+              <h4 class="text-sm font-bold text-white flex items-center justify-between">
+                <span>${step.title || `Phase ${idx + 1}`}</span>
+              </h4>
+              <p class="mt-2 text-xs text-slate-300 leading-relaxed whitespace-pre-line">${step.description || ''}</p>
+              ${step.image ? `
+                <div class="mt-3 overflow-hidden rounded-lg border border-hw-border max-w-md cursor-pointer" onclick="openLightbox('${step.image}')">
+                  <img src="${step.image}" alt="Step photo" class="w-full h-44 object-cover hover:scale-105 transition" loading="lazy">
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    workflowStepsHtml = `
+      <div class="p-8 text-center border border-dashed border-hw-border rounded-xl bg-hw-surface/30 text-slate-400 text-xs">
+        No workflow steps documented yet. Click "Edit Project" to add your fabrication timeline.
+      </div>
+    `;
+  }
+
+  // Tags pill
+  const tagsHtml = (p.tags || []).map(t => 
+    `<span class="text-xs font-mono px-2.5 py-1 rounded bg-hw-card border border-hw-border text-cyan-300">${t}</span>`
+  ).join('');
+
+  const detailContent = document.getElementById('detailContent');
+  detailContent.innerHTML = `
+    <!-- Project Overview Header -->
+    <div class="bg-hw-card border border-hw-border rounded-2xl p-6 md:p-8 mb-8">
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="text-xs font-mono uppercase px-3 py-1 rounded-full ${getStatusBadgeClass(p.status)}">
+          ${p.status || 'Active'}
+        </span>
+        <span class="text-xs px-3 py-1 rounded-full bg-slate-800 text-slate-300 font-medium">
+          ${p.category}
+        </span>
+        ${p.mcu ? `
+          <span class="text-xs font-mono px-3 py-1 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-300 flex items-center space-x-1">
+            <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+            <span>${p.mcu}</span>
+          </span>
+        ` : ''}
+        ${p.date ? `
+          <span class="text-xs text-slate-400 ml-auto flex items-center space-x-1">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            <span>${p.date}</span>
+          </span>
+        ` : ''}
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">${p.title}</h1>
+      <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">${p.tagline || ''}</p>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        ${tagsHtml}
+      </div>
+
+      ${(p.githubUrl || p.cadUrl) ? `
+        <div class="mt-6 pt-5 border-t border-hw-border/80 flex flex-wrap gap-3">
+          ${p.githubUrl ? `
+            <a href="${p.githubUrl}" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg bg-hw-surface border border-hw-border hover:border-cyan-400 text-xs font-medium text-white flex items-center space-x-2 transition">
+              <i data-lucide="github" class="w-4 h-4"></i>
+              <span>GitHub Repository</span>
+            </a>
+          ` : ''}
+          ${p.cadUrl ? `
+            <a href="${p.cadUrl}" target="_blank" rel="noopener" class="px-4 py-2 rounded-lg bg-hw-surface border border-hw-border hover:border-emerald-400 text-xs font-medium text-emerald-300 flex items-center space-x-2 transition">
+              <i data-lucide="compass" class="w-4 h-4"></i>
+              <span>Schematics / CAD Model</span>
+            </a>
+          ` : ''}
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- Media Gallery -->
+    <div class="mb-10">
+      <div class="flex items-center space-x-2 mb-4">
+        <i data-lucide="images" class="w-5 h-5 text-cyan-400"></i>
+        <h2 class="text-lg font-bold text-white">Photos & Circuit Diagrams</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        ${photosGalleryHtml}
+      </div>
+    </div>
+
+    <!-- Technical Architecture / Description -->
+    ${p.description ? `
+      <div class="bg-hw-card border border-hw-border rounded-2xl p-6 md:p-8 mb-10">
+        <div class="flex items-center space-x-2 mb-4">
+          <i data-lucide="layers" class="w-5 h-5 text-cyan-400"></i>
+          <h2 class="text-lg font-bold text-white">Technical Architecture & Notes</h2>
+        </div>
+        <div class="text-sm text-slate-300 leading-relaxed whitespace-pre-line space-y-2">
+          ${escapeHtml(p.description)}
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- Bill of Materials Section -->
+    <div class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="list-checks" class="w-5 h-5 text-cyan-400"></i>
+          <h2 class="text-lg font-bold text-white">Bill of Materials (BOM)</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400">${p.bom ? p.bom.length : 0} line items</span>
+      </div>
+      <div class="overflow-x-auto rounded-xl border border-hw-border bg-hw-card">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-hw-surface border-b border-hw-border text-slate-400 font-mono">
+            <tr>
+              <th class="p-3">Component / Part</th>
+              <th class="p-3 w-20">Qty</th>
+              <th class="p-3">Designator / Ref</th>
+              <th class="p-3">Datasheet / Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${bomRowsHtml}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Firmware & Code Section -->
+    <div class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="code-2" class="w-5 h-5 text-cyan-400"></i>
+          <h2 class="text-lg font-bold text-white">Firmware & Code Snippets</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400">${p.codeSnippets ? p.codeSnippets.length : 0} files</span>
+      </div>
+      ${codeSnippetsHtml}
+    </div>
+
+    <!-- Step-by-Step Build Workflow Timeline -->
+    <div class="mb-12">
+      <div class="flex items-center space-x-2 mb-4">
+        <i data-lucide="git-merge" class="w-5 h-5 text-cyan-400"></i>
+        <h2 class="text-lg font-bold text-white">Fabrication & Assembly Workflow</h2>
+      </div>
+      ${workflowStepsHtml}
+    </div>
+  `;
+
+  // Re-run icons and syntax highlighting
+  lucide.createIcons();
+  document.querySelectorAll('pre code').forEach((block) => {
+    hljs.highlightElement(block);
+  });
+}
+
+function navigateHome() {
+  viewingProjectId = null;
+  detailView.classList.add('hidden');
+  homeView.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  renderProjects();
+}
+
+// Copy Code Button
+function copyCode(btn, snippetIndex) {
+  const p = projects.find(item => item.id === viewingProjectId);
+  if (!p || !p.codeSnippets || !p.codeSnippets[snippetIndex]) return;
+
+  const codeText = p.codeSnippets[snippetIndex].code;
+  navigator.clipboard.writeText(codeText).then(() => {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i><span class="text-emerald-400">Copied!</span>`;
+    lucide.createIcons();
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      lucide.createIcons();
+    }, 2000);
+  });
+}
+
+// Lightbox
+function openLightbox(url) {
+  lightboxImg.src = url;
+  lightboxModal.classList.remove('hidden');
+}
+function closeLightbox() {
+  lightboxModal.classList.add('hidden');
+  lightboxImg.src = '';
+}
+
+// Project Modal Open & Edit
+function openProjectModal(editId = null) {
+  projectForm.reset();
+  switchModalTab('tab-overview');
+
+  if (editId) {
+    const p = projects.find(item => item.id === editId);
+    if (!p) return;
+    editingProjectId.value = p.id;
+    modalTitle.textContent = 'Edit Hardware Project';
+
+    document.getElementById('formTitle').value = p.title || '';
+    document.getElementById('formTagline').value = p.tagline || '';
+    document.getElementById('formCategory').value = p.category || 'IoT & Sensors';
+    document.getElementById('formStatus').value = p.status || 'Completed';
+    document.getElementById('formMcu').value = p.mcu || '';
+    document.getElementById('formDate').value = p.date || '';
+    document.getElementById('formTags').value = (p.tags || []).join(', ');
+    document.getElementById('formDescription').value = p.description || '';
+    document.getElementById('formGithubUrl').value = p.githubUrl || '';
+    document.getElementById('formCadUrl').value = p.cadUrl || '';
+
+    modalPhotos = [...(p.photos || [])];
+    modalBom = JSON.parse(JSON.stringify(p.bom || []));
+    modalCodeSnippets = JSON.parse(JSON.stringify(p.codeSnippets || []));
+    modalWorkflowSteps = JSON.parse(JSON.stringify(p.workflow || []));
+  } else {
+    editingProjectId.value = '';
+    modalTitle.textContent = 'Upload Hardware Project';
+    document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+
+    modalPhotos = [];
+    modalBom = [
+      { name: '', qty: 1, ref: '', link: '' }
+    ];
+    modalCodeSnippets = [
+      { fileName: 'main.ino', language: 'arduino', code: '// Paste your setup() and loop() firmware code here\nvoid setup() {\n  Serial.begin(115200);\n}\n\nvoid loop() {\n}' }
+    ];
+    modalWorkflowSteps = [
+      { title: 'Step 1: Circuit Prototyping on Breadboard', description: 'Tested connections and checked voltages before soldering.', image: '' }
+    ];
+  }
+
+  renderModalPhotosPreview();
+  renderModalBomRows();
+  renderModalCodeSnippets();
+  renderModalWorkflowSteps();
+
+  projectModal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  lucide.createIcons();
+}
+
+function closeProjectModal() {
+  projectModal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+// Modal Tabs
+function switchModalTab(tabId) {
+  document.querySelectorAll('.modal-tab').forEach(btn => {
+    if (btn.getAttribute('data-tab') === tabId) {
+      btn.classList.add('active', 'border-cyan-400', 'text-cyan-400');
+      btn.classList.remove('border-transparent', 'text-slate-400');
+    } else {
+      btn.classList.remove('active', 'border-cyan-400', 'text-cyan-400');
+      btn.classList.add('border-transparent', 'text-slate-400');
+    }
+  });
+
+  document.querySelectorAll('.modal-tab-content').forEach(content => {
+    if (content.id === tabId) {
+      content.classList.remove('hidden');
+    } else {
+      content.classList.add('hidden');
+    }
+  });
+  lucide.createIcons();
+}
+
+// Photos Upload Handler
+function handleFilesUpload(files) {
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // Compress/resize large images if needed before storing as DataURL
+      compressImage(e.target.result, 1280, 0.85, (compressedDataUrl) => {
+        modalPhotos.push(compressedDataUrl);
+        renderModalPhotosPreview();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function compressImage(base64Str, maxWidth, quality, callback) {
+  const img = new Image();
+  img.src = base64Str;
+  img.onload = () => {
+    let width = img.width;
+    let height = img.height;
+    if (width > maxWidth) {
+      height = Math.round((height * maxWidth) / width);
+      width = maxWidth;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    callback(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.onerror = () => callback(base64Str);
+}
+
+function addPhotoFromUrl() {
+  const urlInput = document.getElementById('photoUrlInput');
+  const url = urlInput.value.trim();
+  if (!url) return;
+  modalPhotos.push(url);
+  urlInput.value = '';
+  renderModalPhotosPreview();
+}
+
+function removeModalPhoto(index) {
+  modalPhotos.splice(index, 1);
+  renderModalPhotosPreview();
+}
+
+function renderModalPhotosPreview() {
+  if (modalPhotos.length === 0) {
+    photosPreviewList.innerHTML = `<div class="col-span-full text-center py-3 text-xs text-slate-400">No photos added yet.</div>`;
+    return;
+  }
+
+  photosPreviewList.innerHTML = modalPhotos.map((url, idx) => `
+    <div class="relative group rounded-lg overflow-hidden border border-hw-border bg-hw-card h-24">
+      <img src="${url}" alt="Preview" class="w-full h-full object-cover" />
+      <button type="button" onclick="removeModalPhoto(${idx})" class="absolute top-1 right-1 bg-red-600/90 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition">
+        <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+      </button>
+      ${idx === 0 ? `<span class="absolute bottom-1 left-1 bg-cyan-950/90 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded font-mono">Cover</span>` : ''}
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// BOM Management
+function addBomRow() {
+  modalBom.push({ name: '', qty: 1, ref: '', link: '' });
+  renderModalBomRows();
+}
+
+function removeBomRow(idx) {
+  modalBom.splice(idx, 1);
+  renderModalBomRows();
+}
+
+function renderModalBomRows() {
+  if (modalBom.length === 0) {
+    bomTableBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Click "+ Add Component" to add items to your BOM.</td></tr>`;
+    return;
+  }
+
+  bomTableBody.innerHTML = modalBom.map((item, idx) => `
+    <tr>
+      <td class="p-2">
+        <input type="text" placeholder="e.g. 10k Resistor 0805" value="${escapeHtml(item.name || '')}" oninput="modalBom[${idx}].name = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-2.5 py-1 text-slate-200">
+      </td>
+      <td class="p-2 w-20">
+        <input type="number" min="1" value="${item.qty || 1}" oninput="modalBom[${idx}].qty = parseInt(this.value) || 1" class="w-full bg-hw-bg border border-hw-border rounded px-2 py-1 text-slate-200 font-mono">
+      </td>
+      <td class="p-2">
+        <input type="text" placeholder="e.g. R1, R2" value="${escapeHtml(item.ref || '')}" oninput="modalBom[${idx}].ref = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-2.5 py-1 text-slate-200 font-mono">
+      </td>
+      <td class="p-2">
+        <input type="url" placeholder="https://..." value="${escapeHtml(item.link || '')}" oninput="modalBom[${idx}].link = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-2.5 py-1 text-slate-200">
+      </td>
+      <td class="p-2 text-center">
+        <button type="button" onclick="removeBomRow(${idx})" class="text-slate-400 hover:text-red-400 p-1">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+  lucide.createIcons();
+}
+
+// Code Snippets in Modal
+function addCodeSnippetRow() {
+  modalCodeSnippets.push({
+    fileName: 'firmware.cpp',
+    language: 'cpp',
+    code: ''
+  });
+  renderModalCodeSnippets();
+}
+
+function removeCodeSnippetRow(idx) {
+  modalCodeSnippets.splice(idx, 1);
+  renderModalCodeSnippets();
+}
+
+function renderModalCodeSnippets() {
+  if (modalCodeSnippets.length === 0) {
+    codeSnippetsContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 border border-dashed border-hw-border rounded-xl">No code files added yet. Click "+ Add Code File" above.</div>`;
+    return;
+  }
+
+  codeSnippetsContainer.innerHTML = modalCodeSnippets.map((snip, idx) => `
+    <div class="border border-hw-border rounded-xl p-4 bg-hw-card/60 space-y-3">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1">File Name</label>
+            <input type="text" value="${escapeHtml(snip.fileName || '')}" oninput="modalCodeSnippets[${idx}].fileName = this.value" placeholder="e.g. main.cpp or sensors.py" class="w-full bg-hw-bg border border-hw-border rounded px-2.5 py-1 text-xs text-slate-200 font-mono">
+          </div>
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1">Language</label>
+            <select onchange="modalCodeSnippets[${idx}].language = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-2.5 py-1 text-xs text-slate-200">
+              <option value="cpp" ${snip.language === 'cpp' ? 'selected' : ''}>C++ / Arduino</option>
+              <option value="python" ${snip.language === 'python' ? 'selected' : ''}>Python / MicroPython</option>
+              <option value="rust" ${snip.language === 'rust' ? 'selected' : ''}>Rust</option>
+              <option value="json" ${snip.language === 'json' ? 'selected' : ''}>JSON / Config</option>
+              <option value="plaintext" ${snip.language === 'plaintext' ? 'selected' : ''}>Plain Text</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" onclick="removeCodeSnippetRow(${idx})" class="text-slate-400 hover:text-red-400 p-1.5 self-end rounded hover:bg-slate-800">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-mono text-slate-400 mb-1">Source Code</label>
+        <textarea rows="6" oninput="modalCodeSnippets[${idx}].code = this.value" placeholder="// Paste code here..." class="w-full bg-hw-bg border border-hw-border rounded-lg p-3 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-400">${escapeHtml(snip.code || '')}</textarea>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// Workflow Steps in Modal
+function addWorkflowStepRow() {
+  modalWorkflowSteps.push({
+    title: '',
+    description: '',
+    image: ''
+  });
+  renderModalWorkflowSteps();
+}
+
+function removeWorkflowStepRow(idx) {
+  modalWorkflowSteps.splice(idx, 1);
+  renderModalWorkflowSteps();
+}
+
+function renderModalWorkflowSteps() {
+  if (modalWorkflowSteps.length === 0) {
+    workflowStepsContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 border border-dashed border-hw-border rounded-xl">No build steps added yet. Click "+ Add Build Step" to document your fabrication log.</div>`;
+    return;
+  }
+
+  workflowStepsContainer.innerHTML = modalWorkflowSteps.map((step, idx) => `
+    <div class="border border-hw-border rounded-xl p-4 bg-hw-card/60 space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-mono font-bold text-cyan-400">Step #${idx + 1}</span>
+        <button type="button" onclick="removeWorkflowStepRow(${idx})" class="text-slate-400 hover:text-red-400 p-1">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div>
+        <input type="text" placeholder="Step Title (e.g. Solder SMD Resistors & Power Check)" value="${escapeHtml(step.title || '')}" oninput="modalWorkflowSteps[${idx}].title = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-3 py-1.5 text-xs text-white font-medium">
+      </div>
+
+      <div>
+        <textarea rows="2" placeholder="Step description, findings, precautions, and test results..." oninput="modalWorkflowSteps[${idx}].description = this.value" class="w-full bg-hw-bg border border-hw-border rounded-lg p-2.5 text-xs text-slate-200">${escapeHtml(step.description || '')}</textarea>
+      </div>
+
+      <div>
+        <input type="url" placeholder="Optional step photo URL (e.g. Imgur / Unsplash)" value="${escapeHtml(step.image || '')}" oninput="modalWorkflowSteps[${idx}].image = this.value" class="w-full bg-hw-bg border border-hw-border rounded px-3 py-1 text-xs text-slate-300">
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+// Handle Form Submission
+function handleFormSubmit(e) {
+  e.preventDefault();
+
+  const title = document.getElementById('formTitle').value.trim();
+  const tagline = document.getElementById('formTagline').value.trim();
+  const category = document.getElementById('formCategory').value;
+  const status = document.getElementById('formStatus').value;
+  const mcu = document.getElementById('formMcu').value.trim();
+  const date = document.getElementById('formDate').value;
+  const tagsStr = document.getElementById('formTags').value;
+  const description = document.getElementById('formDescription').value.trim();
+  const githubUrl = document.getElementById('formGithubUrl').value.trim();
+  const cadUrl = document.getElementById('formCadUrl').value.trim();
+
+  const tags = tagsStr.split(',')
+    .map(t => t.trim())
+    .filter(t => t.length > 0);
+
+  // Filter empty BOM items
+  const cleanBom = modalBom.filter(b => b.name && b.name.trim().length > 0);
+  // Filter empty code snippets
+  const cleanCode = modalCodeSnippets.filter(c => c.fileName || c.code);
+  // Filter workflow steps
+  const cleanWorkflow = modalWorkflowSteps.filter(w => w.title || w.description);
+
+  const editId = editingProjectId.value;
+
+  if (editId) {
+    // Update existing
+    const index = projects.findIndex(p => p.id === editId);
+    if (index !== -1) {
+      projects[index] = {
+        ...projects[index],
+        title,
+        tagline,
+        category,
+        status,
+        mcu,
+        date,
+        tags,
+        description,
+        githubUrl,
+        cadUrl,
+        photos: modalPhotos,
+        bom: cleanBom,
+        codeSnippets: cleanCode,
+        workflow: cleanWorkflow
+      };
+    }
+  } else {
+    // Create new
+    const newProject = {
+      id: 'proj_' + Date.now(),
+      title,
+      tagline,
+      category,
+      status,
+      mcu,
+      date: date || new Date().toISOString().split('T')[0],
+      tags,
+      description,
+      githubUrl,
+      cadUrl,
+      photos: modalPhotos,
+      bom: cleanBom,
+      codeSnippets: cleanCode,
+      workflow: cleanWorkflow
+    };
+    projects.unshift(newProject);
+  }
+
+  saveProjects();
+  closeProjectModal();
+  updateStats();
+
+  if (editId && viewingProjectId === editId) {
+    viewProject(editId);
+  } else {
+    renderProjects();
+  }
+}
+
+// Delete Project
+function confirmDeleteProject(id) {
+  if (confirm('Are you sure you want to delete this hardware project? This action cannot be undone.')) {
+    projects = projects.filter(p => p.id !== id);
+    saveProjects();
+    updateStats();
+    navigateHome();
+  }
+}
+
+// Export single project as formatted Markdown (for GitHub README)
+function exportSingleProjectMarkdown(id) {
+  const p = projects.find(item => item.id === id);
+  if (!p) return;
+
+  let md = `# ${p.title}\n\n`;
+  if (p.tagline) md += `> ${p.tagline}\n\n`;
+
+  md += `**Category:** ${p.category} | **Status:** ${p.status} | **MCU:** ${p.mcu || 'N/A'} | **Date:** ${p.date || 'N/A'}\n\n`;
+
+  if (p.photos && p.photos.length > 0) {
+    md += `## Gallery\n\n`;
+    p.photos.forEach(img => {
+      md += `![](${img})\n\n`;
+    });
+  }
+
+  if (p.description) {
+    md += `## Architecture & Overview\n\n${p.description}\n\n`;
+  }
+
+  if (p.bom && p.bom.length > 0) {
+    md += `## Bill of Materials (BOM)\n\n`;
+    md += `| Part | Qty | Designator | Link |\n|---|---|---|---|\n`;
+    p.bom.forEach(b => {
+      md += `| ${b.name} | ${b.qty} | ${b.ref || '-'} | ${b.link ? `[Link](${b.link})` : '-'} |\n`;
+    });
+    md += `\n`;
+  }
+
+  if (p.workflow && p.workflow.length > 0) {
+    md += `## Build Workflow & Fabrication Log\n\n`;
+    p.workflow.forEach((step, idx) => {
+      md += `### Step ${idx + 1}: ${step.title}\n\n${step.description}\n\n`;
+      if (step.image) md += `![](${step.image})\n\n`;
+    });
+  }
+
+  if (p.codeSnippets && p.codeSnippets.length > 0) {
+    md += `## Source Code\n\n`;
+    p.codeSnippets.forEach(snip => {
+      md += `### ${snip.fileName}\n\`\`\`${snip.language || ''}\n${snip.code}\n\`\`\`\n\n`;
+    });
+  }
+
+  downloadFile(`${p.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}_readme.md`, md, 'text/markdown');
+}
+
+// Export / Import Data (Backup)
+function exportDataJson() {
+  const dataStr = JSON.stringify(projects, null, 2);
+  downloadFile('circuitr_hardware_projects_backup.json', dataStr, 'application/json');
+}
+
+function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      if (Array.isArray(imported)) {
+        if (confirm(`Import ${imported.length} projects? This will merge with your current projects.`)) {
+          // Merge avoiding ID duplication
+          const existingIds = new Set(projects.map(p => p.id));
+          imported.forEach(item => {
+            if (existingIds.has(item.id)) {
+              item.id = 'proj_' + Math.random().toString(36).substr(2, 9);
+            }
+            projects.unshift(item);
+          });
+          saveProjects();
+          updateStats();
+          renderProjects();
+          alert('Successfully imported hardware projects!');
+        }
+      } else {
+        alert('Invalid JSON file format. Expected a project array.');
+      }
+    } catch (err) {
+      alert('Error parsing JSON backup file: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Helper Utilities
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(str) {
+  return (str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}

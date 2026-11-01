@@ -1,0 +1,84 @@
+/* Custom styles for Hardware Project Hub */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #0a0d14;
+  color: #e2e8f0;
+}
+
+code, pre, .font-mono {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Circuit grid aesthetic background */
+.circuit-grid-pattern {
+  background-image: radial-gradient(rgba(6, 182, 212, 0.25) 1px, transparent 1px),
+                    linear-gradient(to right, rgba(35, 48, 84, 0.25) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(35, 48, 84, 0.25) 1px, transparent 1px);
+  background-size: 24px 24px, 48px 48px, 48px 48px;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #0d121f;
+}
+::-webkit-scrollbar-thumb {
+  background: #233054;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+/* Modal Active Tab Styles */
+.modal-tab.active {
+  border-color: #06b6d4;
+  color: #06b6d4;
+}
+
+/* Card hover glow */
+.project-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.45);
+  box-shadow: 0 12px 30px -10px rgba(6, 182, 212, 0.15);
+}
+
+/* Syntax highlighter tweaks */
+pre code.hljs {
+  padding: 1.25rem !important;
+  border-radius: 0.75rem;
+  background: #0f1422 !important;
+  font-size: 0.825rem;
+  line-height: 1.5;
+}
+
+/* Status Badges */
+.badge-completed {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.badge-prototype {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.badge-in-progress {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+.badge-archived {
+  background-color: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
