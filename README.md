@@ -1,8 +1,24 @@
 # CIRCUITR // Hardware Engineering Project Hub
 
-A modern web application built specifically for hardware makers, embedded engineers, and electronics hobbyists to upload, showcase, and archive their hardware projects, photos, schematics, source code, and step-by-step fabrication workflows.
+> **Live Website:** [https://dipanr705-12.github.io/showcase/](https://dipanr705-12.github.io/showcase/)
 
-## Key Features
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-06b6d4?style=for-the-badge&logo=github)](https://dipanr705-12.github.io/showcase/)
+[![Status](https://img.shields.io/badge/Status-Active-emerald?style=for-the-badge)](https://dipanr705-12.github.io/showcase/)
+
+A modern, responsive web application designed for hardware makers, embedded engineers, and electronics hobbyists to upload, showcase, and archive their hardware projects, workbench photos, circuit schematics, source firmware, and step-by-step fabrication workflows.
+
+---
+
+## 🌐 Live Access
+
+Visit the live site directly in your browser:
+### 🔗 [https://dipanr705-12.github.io/showcase/](https://dipanr705-12.github.io/showcase/)
+
+*(Hosted 24/7 on GitHub Pages — works anywhere, on any device, without requiring a local server).*
+
+---
+
+## ✨ Key Features
 
 1. **Multi-Media Project Showcase**:
    - Filter by categories: *IoT & Sensors*, *Robotics*, *PCB & Circuits*, *Embedded Systems*, *3D Printing*, *Wearables*, *FPGA*.
@@ -10,7 +26,7 @@ A modern web application built specifically for hardware makers, embedded engine
    - Status indicators: *Completed*, *Prototype*, *In Progress*, *Archived*.
 
 2. **Hardware-Specific Upload System**:
-   - **Photos & Circuit Diagrams**: Drag-and-drop or select multiple photos with automatic in-browser client compression to preserve high fidelity without exceeding storage quotas.
+   - **Photos & Circuit Diagrams**: Drag-and-drop or select multiple photos with automatic in-browser client compression to preserve high fidelity.
    - **Bill of Materials (BOM)**: Track components, designators (R1, C2, U1), quantities, and direct supplier or datasheet links.
    - **Firmware & Source Code**: Multiple code tabs with syntax highlighting (C++, Arduino, MicroPython, Rust, Verilog, JSON) and 1-click clipboard copy.
    - **Step-by-Step Workflow Log**: Timeline of fabrication, PCB etching/reflow, soldering, calibration, and debugging phases with step photos.
@@ -21,15 +37,18 @@ A modern web application built specifically for hardware makers, embedded engine
    - **1-Click README Exporter**: Converts any project into a formatted GitHub-ready `README.md` file.
    - **JSON Backup & Restore**: Export all projects as a single backup file and restore them on any computer.
 
-## How to Run
+---
 
-Simply open [index.html](file:///C:/Users/dipan%20roy/.gemini/antigravity/scratch/hardware-project-hub/index.html) in your browser:
+## 💻 Running Locally (Optional)
 
-- Double click `index.html` in file explorer, OR
-- Run a lightweight local server:
-  ```bash
-  cd "C:\Users\dipan roy\.gemini\antigravity\scratch\hardware-project-hub"
-  npx serve .
-  # or
-  python -m http.server 8080
-  ```
+You can also run it locally on your computer:
+
+```bash
+# Clone the repository
+git clone https://github.com/dipanr705-12/showcase.git
+cd showcase
+
+# Start with Node.js
+node server.js
+```
+Then open `http://localhost:3000`.
