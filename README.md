@@ -5,7 +5,12 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-06b6d4?style=for-the-badge&logo=github)](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
 [![Status](https://img.shields.io/badge/Status-Active-emerald?style=for-the-badge)](https://dipanr705-12.github.io/lets-explore-of-my-little-hardware-world/)
 
-A modern, responsive web application designed for hardware makers, embedded engineers, and electronics hobbyists to upload, showcase, and archive their hardware projects, workbench photos, circuit schematics, source firmware, and step-by-step fabrication workflows.
+Welcome to **Let's Explore of My Little Hardware World**! This website is an interactive digital lab and archive where I upload, document, and explore everything I know and build in hardware and electronics.
+
+The platform is organized into three distinct sections:
+1. **Projects**: Full end-to-end hardware builds (rovers, IoT sensor nodes, custom mechanical keyboards, robotics).
+2. **Components**: Discrete chips, microcontrollers (ESP32-S3, RP2040, STM32), ICs, sensors (MPU-6050, LiDAR), passives, and pinouts.
+3. **Modules**: Plug-and-play breakout boards, RF transceivers (LoRa SX1262), motor drivers (DRV8871), and display modules.
 
 ---
 
