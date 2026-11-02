@@ -62,7 +62,20 @@
 
       <!-- Quick Search & Actions -->
       <div class="flex items-center space-x-3">
-        <div class="relative hidden sm:block w-64 md:w-80">
+        <!-- Section Quick Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-1 mr-2 text-xs font-medium">
+          <button onclick="switchMainTab('projects')" id="navTabProjects" class="px-3 py-1.5 rounded-lg text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 transition">
+            1) Projects
+          </button>
+          <button onclick="switchMainTab('components')" id="navTabComponents" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-hw-card transition">
+            2) Components
+          </button>
+          <button onclick="switchMainTab('modules')" id="navTabModules" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-hw-card transition">
+            3) Modules
+          </button>
+        </nav>
+
+        <div class="relative hidden sm:block w-52 lg:w-72">
           <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
           <input 
             type="text" 
@@ -99,53 +112,104 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero Section & Welcome Banner -->
   <section class="relative overflow-hidden border-b border-hw-border/60 bg-gradient-to-b from-hw-surface via-hw-bg to-hw-bg py-10 px-4 sm:px-6">
     <div class="circuit-grid-pattern absolute inset-0 opacity-15 pointer-events-none"></div>
     <div class="max-w-7xl mx-auto relative z-10">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono mb-3">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono mb-4 shadow-sm shadow-cyan-950">
             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span>HARDWARE BUILD ARCHIVE & WORKFLOW REPOSITORY</span>
+            <span>WELCOME TO LET'S EXPLORE OF MY LITTLE HARDWARE WORLD</span>
           </div>
-          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-            Let's Explore of My Little Hardware World
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Welcome to <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">My Hardware World</span>
           </h1>
-          <p class="mt-2 text-slate-400 text-sm sm:text-base max-w-2xl">
-            Document, showcase, and track prototypes, custom PCBs, microcontrollers, schematics, source firmware, and step-by-step fabrication logs.
+          <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
+            Welcome to this website! Here I upload, document, and share everything I know and explore about electronics and embedded engineering — including all our <strong class="text-cyan-300">projects</strong>, raw electronic <strong class="text-emerald-300">components</strong> (ICs, sensors, passives, controllers), plug-and-play breakout <strong class="text-purple-300">modules</strong>, circuit schematics, and hands-on build workflows.
           </p>
+
+          <!-- Direct Upload Shortcuts -->
+          <div class="mt-5 flex flex-wrap items-center gap-3">
+            <button onclick="openProjectModal('project')" class="px-3.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 text-xs font-semibold flex items-center space-x-1.5 transition">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+              <span>Upload Project</span>
+            </button>
+            <button onclick="openProjectModal('component')" class="px-3.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-semibold flex items-center space-x-1.5 transition">
+              <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+              <span>Upload Component</span>
+            </button>
+            <button onclick="openProjectModal('module')" class="px-3.5 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:bg-purple-500/20 text-xs font-semibold flex items-center space-x-1.5 transition">
+              <i data-lucide="box" class="w-3.5 h-3.5"></i>
+              <span>Upload Module</span>
+            </button>
+          </div>
         </div>
 
         <!-- Quick Stats -->
         <div class="grid grid-cols-3 gap-3 sm:gap-4 shrink-0">
-          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
+          <div class="bg-hw-card/90 border border-hw-border rounded-xl p-3.5 text-center min-w-[95px] shadow-lg">
             <div id="statTotalProjects" class="text-2xl font-bold font-mono text-cyan-400">0</div>
-            <div class="text-xs text-slate-400 mt-0.5">Projects</div>
+            <div class="text-xs text-slate-400 mt-0.5 font-medium">1) Projects</div>
           </div>
-          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
+          <div class="bg-hw-card/90 border border-hw-border rounded-xl p-3.5 text-center min-w-[95px] shadow-lg">
             <div id="statTotalComponents" class="text-2xl font-bold font-mono text-emerald-400">0</div>
-            <div class="text-xs text-slate-400 mt-0.5">Parts in BOM</div>
+            <div class="text-xs text-slate-400 mt-0.5 font-medium">2) Components</div>
           </div>
-          <div class="bg-hw-card/80 border border-hw-border rounded-xl p-3.5 text-center min-w-[90px]">
-            <div id="statTotalWorkflows" class="text-2xl font-bold font-mono text-purple-400">0</div>
-            <div class="text-xs text-slate-400 mt-0.5">Build Steps</div>
+          <div class="bg-hw-card/90 border border-hw-border rounded-xl p-3.5 text-center min-w-[95px] shadow-lg">
+            <div id="statTotalModules" class="text-2xl font-bold font-mono text-purple-400">0</div>
+            <div class="text-xs text-slate-400 mt-0.5 font-medium">3) Modules</div>
           </div>
         </div>
       </div>
 
-      <!-- Categories & Filters -->
-      <div class="mt-8 flex flex-wrap items-center gap-2" id="categoryFilterContainer">
-        <!-- Dynamically rendered category pills -->
+      <!-- Section Navigation Tabs: 1) Projects  2) Components  3) Modules -->
+      <div class="mt-8 pt-6 border-t border-hw-border/60">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center space-x-2 bg-hw-surface p-1 rounded-xl border border-hw-border">
+            <button 
+              id="tabBtnProjects" 
+              onclick="switchMainTab('projects')" 
+              class="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25"
+            >
+              <i data-lucide="layers" class="w-4 h-4"></i>
+              <span>1) Projects</span>
+              <span id="tabCountProjects" class="ml-1 text-[11px] px-1.5 py-0.2 rounded-full bg-slate-950/20 font-mono">0</span>
+            </button>
+            <button 
+              id="tabBtnComponents" 
+              onclick="switchMainTab('components')" 
+              class="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition"
+            >
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>2) Components</span>
+              <span id="tabCountComponents" class="ml-1 text-[11px] px-1.5 py-0.2 rounded-full bg-hw-card border border-hw-border text-slate-300 font-mono">0</span>
+            </button>
+            <button 
+              id="tabBtnModules" 
+              onclick="switchMainTab('modules')" 
+              class="flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition"
+            >
+              <i data-lucide="box" class="w-4 h-4"></i>
+              <span>3) Modules</span>
+              <span id="tabCountModules" class="ml-1 text-[11px] px-1.5 py-0.2 rounded-full bg-hw-card border border-hw-border text-slate-300 font-mono">0</span>
+            </button>
+          </div>
+
+          <!-- Category Pills Filter (Contextual) -->
+          <div class="flex flex-wrap items-center gap-1.5" id="categoryFilterContainer">
+            <!-- Dynamically rendered category pills -->
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Main Projects Feed Container -->
+  <!-- Main Content Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="homeView">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-2">
-        <h2 class="text-lg font-semibold text-slate-200">Projects Portfolio</h2>
+        <h2 id="sectionViewTitle" class="text-lg font-semibold text-slate-200">1) Projects Portfolio</h2>
         <span id="filteredCountBadge" class="text-xs font-mono px-2 py-0.5 rounded bg-hw-card border border-hw-border text-slate-400"></span>
       </div>
 
@@ -154,12 +218,12 @@
         <select id="sortSelector" class="bg-hw-card border border-hw-border rounded-md px-2.5 py-1 text-slate-200 focus:outline-none focus:border-cyan-400">
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
-          <option value="title">Project Name</option>
+          <option value="title">Name</option>
         </select>
       </div>
     </div>
 
-    <!-- Projects Grid -->
+    <!-- Items Grid (Projects / Components / Modules) -->
     <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Injected by app.js -->
     </div>
@@ -167,13 +231,13 @@
     <!-- Empty State -->
     <div id="emptyState" class="hidden flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-hw-border rounded-2xl bg-hw-surface/30">
       <div class="w-16 h-16 rounded-full bg-hw-card flex items-center justify-center text-slate-500 mb-4 border border-hw-border">
-        <i data-lucide="layers" class="w-8 h-8"></i>
+        <i id="emptyStateIcon" data-lucide="layers" class="w-8 h-8"></i>
       </div>
-      <h3 class="text-lg font-semibold text-slate-300">No hardware projects found</h3>
-      <p class="text-sm text-slate-400 max-w-sm mt-1 mb-6">Start building your portfolio by uploading your first microcontroller or circuit project.</p>
-      <button onclick="openProjectModal()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-medium rounded-lg text-sm flex items-center space-x-2">
+      <h3 id="emptyStateTitle" class="text-lg font-semibold text-slate-300">No items found</h3>
+      <p id="emptyStateDesc" class="text-sm text-slate-400 max-w-sm mt-1 mb-6">Start building your hardware archive by uploading your first project, component, or module.</p>
+      <button onclick="openCurrentSectionModal()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-medium rounded-lg text-sm flex items-center space-x-2 shadow-lg shadow-cyan-500/20">
         <i data-lucide="plus" class="w-4 h-4"></i>
-        <span>Add Your First Project</span>
+        <span id="emptyStateBtnText">Upload First Item</span>
       </button>
     </div>
   </main>
@@ -243,9 +307,17 @@
 
         <!-- TAB 1: OVERVIEW & PHOTOS -->
         <div id="tab-overview" class="modal-tab-content space-y-5">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Project Title *</label>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Section Type *</label>
+              <select id="formSectionType" onchange="onSectionTypeChange(this.value)" class="w-full bg-hw-card border border-cyan-500/50 rounded-lg px-3.5 py-2 text-cyan-300 font-medium focus:outline-none focus:border-cyan-400">
+                <option value="project">1) Project (Full Build / System)</option>
+                <option value="component">2) Component (IC, Sensor, Passive)</option>
+                <option value="module">3) Module (Breakout / Shield / Board)</option>
+              </select>
+            </div>
+            <div>
+              <label id="formTitleLabel" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">Title / Name *</label>
               <input type="text" id="formTitle" required placeholder="e.g., ESP32 Autonomous Indoor Rover" class="w-full bg-hw-card border border-hw-border rounded-lg px-3.5 py-2 text-white focus:outline-none focus:border-cyan-400">
             </div>
             <div>
@@ -258,6 +330,10 @@
                 <option value="Wearables & Audio">Wearables & Audio</option>
                 <option value="3D Printing & Enclosures">3D Printing & Enclosures</option>
                 <option value="FPGA & High Speed">FPGA & High Speed</option>
+                <option value="Microcontrollers & ICs">Microcontrollers & ICs</option>
+                <option value="Wireless & RF Modules">Wireless & RF Modules</option>
+                <option value="Power & Motor Drivers">Power & Motor Drivers</option>
+                <option value="Displays & Audio">Displays & Audio</option>
               </select>
             </div>
           </div>
