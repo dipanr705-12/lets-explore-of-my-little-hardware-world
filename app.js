@@ -5,6 +5,7 @@
 
 // Global State
 let projects = [];
+let currentSection = 'projects'; // 'projects' | 'components' | 'modules'
 let activeCategory = 'All';
 let currentSearchQuery = '';
 let currentSort = 'newest';
@@ -20,6 +21,7 @@ let modalWorkflowSteps = [];
 const SEED_PROJECTS = [
   {
     id: 'proj_esp32_rover',
+    section: 'projects',
     title: 'Autonomous LiDAR Navigation Rover',
     tagline: 'Dual BLDC indoor SLAM rover powered by ESP32-S3 and RPLiDAR A1 with FreeRTOS multitasking.',
     category: 'Robotics',
@@ -127,6 +129,7 @@ void computeMotorPID(float targetRPM, float currentRPM, int pwmPin) {
   },
   {
     id: 'proj_hydroponics_lora',
+    section: 'projects',
     title: 'Solar LoRa Hydroponics Telemetry Hub',
     tagline: 'Ultralow-power agricultural sensor node logging EC, pH, water temp, and sunlight over 12km LoRa.',
     category: 'IoT & Sensors',
@@ -196,6 +199,7 @@ while True:
   },
   {
     id: 'proj_split_keyboard',
+    section: 'projects',
     title: 'Ergonomic Split Mechanical Keyboard',
     tagline: 'Custom 42-key ortholinear hot-swap PCB running QMK/Vial with per-key RGB and dual 128x32 OLEDs.',
     category: 'PCB & Circuits',
@@ -251,6 +255,101 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         image: ''
       }
     ]
+  },
+  // ================= 2) COMPONENTS =================
+  {
+    id: 'comp_esp32_s3',
+    section: 'components',
+    title: 'ESP32-S3 Microcontroller IC / SoC',
+    tagline: 'Dual-core Xtensa 32-bit LX7 MCU with 2.4 GHz Wi-Fi & Bluetooth 5 (LE), AI vector acceleration.',
+    category: 'Microcontrollers & ICs',
+    status: 'Completed',
+    mcu: 'Espressif ESP32-S3 (QFN-56)',
+    date: '2026-10-10',
+    tags: ['ESP32', 'Xtensa', 'Wi-Fi', 'BLE', 'AI Acceleration', 'QFN56'],
+    description: 'The ESP32-S3 is a high-performance system-on-chip with dual-core 240 MHz MCU, support for 384 KB ROM, 512 KB SRAM, integrated USB-OTG, and hardware vector instructions for neural network computing.\n\nKey Specs:\n- Clock: Up to 240 MHz\n- Wi-Fi: 802.11 b/g/n\n- Bluetooth: LE 5.0 + Mesh\n- Hardware Security: Flash encryption, cryptographic accelerator, secure boot',
+    photos: [
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'ESP32-S3 Chip (QFN-56)', qty: 1, ref: 'U1', link: 'https://www.espressif.com' },
+      { name: '10uF 0805 Decoupling Cap', qty: 2, ref: 'C1, C2', link: '' },
+      { name: '0.1uF 0402 Bypass Cap', qty: 4, ref: 'C3-C6', link: '' }
+    ],
+    githubUrl: '',
+    cadUrl: '',
+    codeSnippets: [],
+    workflow: []
+  },
+  {
+    id: 'comp_mpu6050',
+    section: 'components',
+    title: 'MPU-6050 6-Axis MotionTracking Sensor IC',
+    tagline: 'Integrated 3-axis accelerometer and 3-axis gyroscope with internal Digital Motion Processor (DMP).',
+    category: 'Sensors & Transducers',
+    status: 'Completed',
+    mcu: 'I2C Interface (0x68 / 0x69)',
+    date: '2026-09-20',
+    tags: ['MPU6050', 'IMU', 'Gyroscope', 'Accelerometer', 'I2C', 'Air Mouse'],
+    description: 'The MPU-6050 combines a 3-axis MEMS accelerometer and a 3-axis MEMS gyroscope on the same silicon die. Used widely for gesture recognition, drones, balancing robots, and our ESP32 Air Mouse project.\n\nKey Specs:\n- Gyroscope: +/-250 to +/-2000 deg/sec\n- Accelerometer: +/-2g to +/-16g\n- Digital Motion Processor (DMP) offloads complex sensor fusion math',
+    photos: [
+      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'MPU-6050 IC (QFN-24)', qty: 1, ref: 'U1', link: '' },
+      { name: '4.7k Pull-up Resistors (SDA/SCL)', qty: 2, ref: 'R1, R2', link: '' }
+    ],
+    githubUrl: 'https://github.com/dipanr705-12/esp32-air-mouse',
+    cadUrl: '',
+    codeSnippets: [],
+    workflow: []
+  },
+  // ================= 3) MODULES =================
+  {
+    id: 'mod_lora_sx1262',
+    section: 'modules',
+    title: 'SX1262 868/915MHz LoRa Transceiver Module',
+    tagline: 'Long-range ultra-low power wireless breakout board with IPEX/SMA antenna connector.',
+    category: 'Wireless & RF Modules',
+    status: 'Completed',
+    mcu: 'SPI Bus Interface',
+    date: '2026-10-18',
+    tags: ['LoRa', 'SX1262', 'Wireless', 'SPI', 'Telemetry', 'Long Range'],
+    description: 'Breakout module built around Semtech SX1262 LoRa core for long-range telemetry. Enables line-of-sight packet transmission over 10+ kilometers with minimal power consumption, ideal for agricultural IoT and remote sensors.',
+    photos: [
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'SX1262 LoRa Breakout Board', qty: 1, ref: 'MOD1', link: '' },
+      { name: '868MHz 3dBi SMA Antenna', qty: 1, ref: 'ANT1', link: '' }
+    ],
+    githubUrl: '',
+    cadUrl: '',
+    codeSnippets: [],
+    workflow: []
+  },
+  {
+    id: 'mod_drv8871_motor',
+    section: 'modules',
+    title: 'DRV8871 3.6A Brushed DC Motor Driver Module',
+    tagline: 'H-bridge motor driver breakout supporting 6.5V to 45V with onboard current regulation.',
+    category: 'Motor Drivers & Actuators',
+    status: 'Completed',
+    mcu: 'PWM / Logic Level 3.3V/5V',
+    date: '2026-08-30',
+    tags: ['DRV8871', 'Motor Driver', 'H-Bridge', 'Robotics', 'PWM'],
+    description: 'Compact high-power motor driver module suitable for driving rovers, robotics DC actuators, and solenoids. Features built-in thermal protection, under-voltage lockout, and precise adjustable current limiting.',
+    photos: [
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80'
+    ],
+    bom: [
+      { name: 'DRV8871 Breakout Board', qty: 1, ref: 'MOD1', link: '' },
+      { name: 'Screw Terminal Blocks 2-Pin', qty: 2, ref: 'J1, J2', link: '' }
+    ],
+    githubUrl: '',
+    cadUrl: '',
+    codeSnippets: [],
+    workflow: []
   }
 ];
 
@@ -259,7 +358,18 @@ function initStorage() {
   try {
     const saved = localStorage.getItem('circuitr_projects');
     if (saved) {
-      projects = JSON.parse(saved);
+      projects = JSON.parse(saved).map(p => ({
+        section: p.section || 'projects',
+        ...p
+      }));
+      // If user previously only had the 3 original projects in localstorage, merge in the new component/module seeds
+      const hasComponents = projects.some(p => p.section === 'components');
+      const hasModules = projects.some(p => p.section === 'modules');
+      if (!hasComponents || !hasModules) {
+        const missingSeeds = SEED_PROJECTS.filter(s => (s.section === 'components' && !hasComponents) || (s.section === 'modules' && !hasModules));
+        projects = [...projects, ...missingSeeds];
+        saveProjects();
+      }
     } else {
       projects = [...SEED_PROJECTS];
       saveProjects();
@@ -282,16 +392,15 @@ function saveProjects() {
 }
 
 // Categories definitions
-const CATEGORIES = [
-  'All',
-  'Robotics',
-  'IoT & Sensors',
-  'PCB & Circuits',
-  'Embedded Systems',
-  'Wearables & Audio',
-  '3D Printing & Enclosures',
-  'FPGA & High Speed'
-];
+const SECTION_CATEGORIES = {
+  projects: ['All', 'Robotics', 'IoT & Sensors', 'PCB & Circuits', 'Embedded Systems', 'Wearables & Audio', '3D Printing & Enclosures', 'FPGA & High Speed'],
+  components: ['All', 'Microcontrollers & ICs', 'Sensors & Transducers', 'Power & Motor Drivers', 'Passives & Diodes', 'Connectors & Switches'],
+  modules: ['All', 'Wireless & RF Modules', 'Display & Audio Modules', 'Motor Drivers & Actuators', 'Power & Charging Modules', 'Interface & Shields']
+};
+
+function getActiveCategoryList() {
+  return SECTION_CATEGORIES[currentSection] || SECTION_CATEGORIES.projects;
+}
 
 // DOM elements
 const homeView = document.getElementById('homeView');
@@ -303,6 +412,10 @@ const searchInput = document.getElementById('searchInput');
 const sortSelector = document.getElementById('sortSelector');
 const statTotalProjects = document.getElementById('statTotalProjects');
 const statTotalComponents = document.getElementById('statTotalComponents');
+const statTotalModules = document.getElementById('statTotalModules');
+const sectionViewTitle = document.getElementById('sectionViewTitle');
+const formSectionType = document.getElementById('formSectionType');
+const formTitleLabel = document.getElementById('formTitleLabel');
 const statTotalWorkflows = document.getElementById('statTotalWorkflows');
 const filteredCountBadge = document.getElementById('filteredCountBadge');
 
@@ -388,8 +501,82 @@ function setupEventListeners() {
 }
 
 // Category Pills
+
+// Main Section Switcher: 1) Projects, 2) Components, 3) Modules
+function switchMainTab(section) {
+  currentSection = section;
+  activeCategory = 'All';
+
+  // Update Section Nav button styles
+  const tabs = [
+    { id: 'tabBtnProjects', navId: 'navTabProjects', sec: 'projects' },
+    { id: 'tabBtnComponents', navId: 'navTabComponents', sec: 'components' },
+    { id: 'tabBtnModules', navId: 'navTabModules', sec: 'modules' }
+  ];
+
+  tabs.forEach(t => {
+    const btn = document.getElementById(t.id);
+    const navBtn = document.getElementById(t.navId);
+    const isActive = t.sec === section;
+
+    if (btn) {
+      if (isActive) {
+        btn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25';
+      } else {
+        btn.className = 'flex items-center space-x-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-white transition';
+      }
+    }
+
+    if (navBtn) {
+      if (isActive) {
+        navBtn.className = 'px-3 py-1.5 rounded-lg text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 transition';
+      } else {
+        navBtn.className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-hw-card transition';
+      }
+    }
+  });
+
+  // Update Section title and empty state text
+  const titles = {
+    projects: '1) Projects Portfolio & Systems',
+    components: '2) Components (ICs, Sensors, Passives)',
+    modules: '3) Modules & Breakout Boards'
+  };
+  if (sectionViewTitle) {
+    sectionViewTitle.textContent = titles[section] || 'Hardware World';
+  }
+
+  const emptyStateTitles = {
+    projects: 'No hardware projects found',
+    components: 'No electronic components uploaded yet',
+    modules: 'No hardware modules uploaded yet'
+  };
+  const emptyTitleElem = document.getElementById('emptyStateTitle');
+  if (emptyTitleElem) emptyTitleElem.textContent = emptyStateTitles[section];
+
+  const emptyBtnElem = document.getElementById('emptyStateBtnText');
+  if (emptyBtnElem) {
+    emptyBtnElem.textContent = section === 'projects' ? 'Upload First Project' : (section === 'components' ? 'Upload Component' : 'Upload Module');
+  }
+
+  renderCategoryPills();
+  renderProjects();
+}
+
+function openCurrentSectionModal() {
+  openProjectModal(currentSection);
+}
+
+function onSectionTypeChange(type) {
+  if (formTitleLabel) {
+    if (type === 'component') formTitleLabel.textContent = 'Component Name / Part Number *';
+    else if (type === 'module') formTitleLabel.textContent = 'Module Name & Model *';
+    else formTitleLabel.textContent = 'Project Title *';
+  }
+}
+
 function renderCategoryPills() {
-  categoryFilterContainer.innerHTML = CATEGORIES.map(cat => {
+  categoryFilterContainer.innerHTML = getActiveCategoryList().map(cat => {
     const isActive = cat === activeCategory;
     const activeClasses = isActive
       ? 'bg-cyan-500 text-slate-950 font-semibold shadow-md shadow-cyan-500/20'
@@ -414,14 +601,16 @@ function selectCategory(cat) {
 // Filtering & Sorting
 function getFilteredProjects() {
   return projects.filter(p => {
+    const itemSection = p.section || 'projects';
+    const matchesSection = itemSection === currentSection;
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
     const matchesSearch = !currentSearchQuery || 
       p.title.toLowerCase().includes(currentSearchQuery) ||
-      p.tagline.toLowerCase().includes(currentSearchQuery) ||
+      (p.tagline && p.tagline.toLowerCase().includes(currentSearchQuery)) ||
       (p.mcu && p.mcu.toLowerCase().includes(currentSearchQuery)) ||
       (p.tags && p.tags.some(t => t.toLowerCase().includes(currentSearchQuery))) ||
       (p.bom && p.bom.some(b => b.name.toLowerCase().includes(currentSearchQuery)));
-    return matchesCategory && matchesSearch;
+    return matchesSection && matchesCategory && matchesSearch;
   }).sort((a, b) => {
     if (currentSort === 'newest') return new Date(b.date || 0) - new Date(a.date || 0);
     if (currentSort === 'oldest') return new Date(a.date || 0) - new Date(b.date || 0);
@@ -547,17 +736,21 @@ function getStatusBadgeClass(status) {
 
 // Stats Calculation
 function updateStats() {
-  statTotalProjects.textContent = projects.length;
-  let totalParts = 0;
-  let totalSteps = 0;
+  const projectCount = projects.filter(p => (p.section || 'projects') === 'projects').length;
+  const componentCount = projects.filter(p => p.section === 'components').length;
+  const moduleCount = projects.filter(p => p.section === 'modules').length;
 
-  projects.forEach(p => {
-    if (p.bom) totalParts += p.bom.length;
-    if (p.workflow) totalSteps += p.workflow.length;
-  });
+  if (statTotalProjects) statTotalProjects.textContent = projectCount;
+  if (statTotalComponents) statTotalComponents.textContent = componentCount;
+  if (statTotalModules) statTotalModules.textContent = moduleCount;
 
-  statTotalComponents.textContent = totalParts;
-  statTotalWorkflows.textContent = totalSteps;
+  const countBadgeProj = document.getElementById('tabCountProjects');
+  const countBadgeComp = document.getElementById('tabCountComponents');
+  const countBadgeMod = document.getElementById('tabCountModules');
+
+  if (countBadgeProj) countBadgeProj.textContent = projectCount;
+  if (countBadgeComp) countBadgeComp.textContent = componentCount;
+  if (countBadgeMod) countBadgeMod.textContent = moduleCount;
 }
 
 // Single Project View
@@ -854,15 +1047,21 @@ function closeLightbox() {
 }
 
 // Project Modal Open & Edit
-function openProjectModal(editId = null) {
+function openProjectModal(editIdOrType = null) {
   projectForm.reset();
   switchModalTab('tab-overview');
 
-  if (editId) {
-    const p = projects.find(item => item.id === editId);
+  const isEditing = editIdOrType && projects.some(p => p.id === editIdOrType);
+
+  if (isEditing) {
+    const p = projects.find(item => item.id === editIdOrType);
     if (!p) return;
     editingProjectId.value = p.id;
-    modalTitle.textContent = 'Edit Hardware Project';
+    const itemSec = p.section || 'projects';
+    if (formSectionType) formSectionType.value = itemSec;
+    onSectionTypeChange(itemSec);
+
+    modalTitle.textContent = itemSec === 'component' ? 'Edit Component' : (itemSec === 'module' ? 'Edit Module' : 'Edit Hardware Project');
 
     document.getElementById('formTitle').value = p.title || '';
     document.getElementById('formTagline').value = p.tagline || '';
@@ -881,7 +1080,20 @@ function openProjectModal(editId = null) {
     modalWorkflowSteps = JSON.parse(JSON.stringify(p.workflow || []));
   } else {
     editingProjectId.value = '';
-    modalTitle.textContent = 'Upload Hardware Project';
+    const initialSection = (typeof editIdOrType === 'string' && ['projects', 'components', 'modules', 'project', 'component', 'module'].includes(editIdOrType))
+      ? (editIdOrType.endsWith('s') ? editIdOrType : editIdOrType + 's')
+      : currentSection;
+
+    const normSec = initialSection.replace(/s$/, ''); // project, component, module
+    if (formSectionType) formSectionType.value = normSec;
+    onSectionTypeChange(normSec);
+
+    const sectionTitles = {
+      project: 'Upload Hardware Project',
+      component: 'Upload Electronic Component',
+      module: 'Upload Hardware Module'
+    };
+    modalTitle.textContent = sectionTitles[normSec] || 'Upload Hardware Item';
     document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
 
     modalPhotos = [];
@@ -1146,6 +1358,8 @@ function renderModalWorkflowSteps() {
 function handleFormSubmit(e) {
   e.preventDefault();
 
+  const secTypeElem = document.getElementById('formSectionType');
+  const sectionType = secTypeElem ? (secTypeElem.value.endsWith('s') ? secTypeElem.value : secTypeElem.value + 's') : currentSection;
   const title = document.getElementById('formTitle').value.trim();
   const tagline = document.getElementById('formTagline').value.trim();
   const category = document.getElementById('formCategory').value;
@@ -1176,6 +1390,7 @@ function handleFormSubmit(e) {
     if (index !== -1) {
       projects[index] = {
         ...projects[index],
+        section: sectionType,
         title,
         tagline,
         category,
@@ -1195,7 +1410,8 @@ function handleFormSubmit(e) {
   } else {
     // Create new
     const newProject = {
-      id: 'proj_' + Date.now(),
+      id: (sectionType === 'components' ? 'comp_' : (sectionType === 'modules' ? 'mod_' : 'proj_')) + Date.now(),
+      section: sectionType,
       title,
       tagline,
       category,
@@ -1217,6 +1433,9 @@ function handleFormSubmit(e) {
   saveProjects();
   closeProjectModal();
   updateStats();
+  if (!editId && sectionType !== currentSection) {
+    switchMainTab(sectionType);
+  }
 
   if (editId && viewingProjectId === editId) {
     viewProject(editId);
