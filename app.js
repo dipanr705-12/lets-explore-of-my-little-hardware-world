@@ -308,9 +308,7 @@ const SEED_PROJECTS = [
       "QFN56"
     ],
     "description": "The ESP32-S3 is a high-performance system-on-chip with dual-core 240 MHz MCU, support for 384 KB ROM, 512 KB SRAM, integrated USB-OTG, and hardware vector instructions for neural network computing.\n\nKey Specs:\n- Clock: Up to 240 MHz\n- Wi-Fi: 802.11 b/g/n\n- Bluetooth: LE 5.0 + Mesh\n- Hardware Security: Flash encryption, cryptographic accelerator, secure boot",
-    "photos": [
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "ESP32-S3 Chip (QFN-56)",
@@ -354,9 +352,7 @@ const SEED_PROJECTS = [
       "Air Mouse"
     ],
     "description": "The MPU-6050 combines a 3-axis MEMS accelerometer and a 3-axis MEMS gyroscope on the same silicon die. Used widely for gesture recognition, drones, balancing robots, and our ESP32 Air Mouse project.\n\nKey Specs:\n- Gyroscope: +/-250 to +/-2000 deg/sec\n- Accelerometer: +/-2g to +/-16g\n- Digital Motion Processor (DMP) offloads complex sensor fusion math",
-    "photos": [
-      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "MPU-6050 IC (QFN-24)",
@@ -394,9 +390,7 @@ const SEED_PROJECTS = [
       "Long Range"
     ],
     "description": "Breakout module built around Semtech SX1262 LoRa core for long-range telemetry. Enables line-of-sight packet transmission over 10+ kilometers with minimal power consumption, ideal for agricultural IoT and remote sensors.",
-    "photos": [
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "SX1262 LoRa Breakout Board",
@@ -433,9 +427,7 @@ const SEED_PROJECTS = [
       "PWM"
     ],
     "description": "Compact high-power motor driver module suitable for driving rovers, robotics DC actuators, and solenoids. Features built-in thermal protection, under-voltage lockout, and precise adjustable current limiting.",
-    "photos": [
-      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "DRV8871 Breakout Board",
@@ -460,7 +452,7 @@ const SEED_PROJECTS = [
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const CURRENT_STORAGE_VERSION = "v4_real_photos_only";
+    const CURRENT_STORAGE_VERSION = "v5_clean_zero_stock_photos";
     const currentVersion = localStorage.getItem("circuitr_version");
     if (currentVersion !== CURRENT_STORAGE_VERSION) {
       // Overwrite previous stale sample projects so real projects show up immediately
@@ -732,7 +724,7 @@ function renderProjects() {
   projectsGrid.innerHTML = filtered.map(p => {
     const coverPhoto = (p.photos && p.photos.length > 0) 
       ? p.photos[0] 
-      : 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80';
+      : '';
 
     const statusBadgeClass = getStatusBadgeClass(p.status);
     const tagsHtml = (p.tags || []).slice(0, 3).map(t => 
@@ -750,7 +742,7 @@ function renderProjects() {
             alt="${p.title}" 
             class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out"
             loading="lazy"
-            onerror="this.src='https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80'"
+            onerror="this.src=''"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-hw-card via-transparent to-transparent opacity-80"></div>
           
@@ -880,7 +872,7 @@ function viewProject(id) {
   // Gallery Photos
   const photos = p.photos && p.photos.length > 0 
     ? p.photos 
-    : ['https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=1200&q=80'];
+    : [''];
 
   const photosGalleryHtml = photos.map((imgUrl, idx) => `
     <div class="relative group cursor-pointer overflow-hidden rounded-xl border border-hw-border bg-hw-surface h-48 md:h-64" onclick="openLightbox('${imgUrl}')">
