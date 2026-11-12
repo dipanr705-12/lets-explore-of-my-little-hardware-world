@@ -291,154 +291,303 @@ const SEED_PROJECTS = [
     ]
   },
   {
-    "id": "comp_esp32_s3",
+    "id": "comp_arduino_uno_r3",
     "section": "components",
-    "title": "ESP32-S3 Microcontroller IC / SoC",
-    "tagline": "Dual-core Xtensa 32-bit LX7 MCU with 2.4 GHz Wi-Fi & Bluetooth 5 (LE), AI vector acceleration.",
+    "title": "Arduino Uno R3 Microcontroller Board (ATmega328P)",
+    "tagline": "Standard 8-bit AVR development board with 14 digital I/O pins, 6 PWM channels, and 6 analog inputs.",
     "category": "Microcontrollers & ICs",
     "status": "Completed",
-    "mcu": "Espressif ESP32-S3 (QFN-56)",
-    "date": "2026-10-10",
+    "mcu": "ATmega328P (16 MHz Crystal)",
+    "date": "2026-11-12",
+    "tags": [
+      "Arduino",
+      "Uno",
+      "ATmega328P",
+      "AVR",
+      "GPIO",
+      "ADC",
+      "PWM",
+      "UART"
+    ],
+    "description": "The flagship Arduino Uno R3 development board powered by the Microchip ATmega328P 8-bit RISC microcontroller.\n\nKey Specifications:\n- Operating Voltage: 5V DC (Input 7-12V via Barrel Jack or USB Type-B)\n- Clock Speed: 16 MHz Quartz Crystal Oscillator\n- Flash Memory: 32 KB (0.5 KB used by bootloader)\n- SRAM: 2 KB, EEPROM: 1 KB\n- Digital I/O Pins: 14 (of which 6 provide PWM output: D3, D5, D6, D9, D10, D11)\n- Analog Input Pins: 6 (10-bit resolution ADC channels A0-A5)\n- Standard ICSP header for direct ISP in-circuit serial programming.",
+    "photos": [
+      "assets/images/comp-arduino-uno-r3.jpg"
+    ],
+    "bom": [
+      {
+        "name": "Arduino Uno R3 Board",
+        "qty": 1,
+        "ref": "DEV1",
+        "link": ""
+      },
+      {
+        "name": "USB Type-A to Type-B Cable",
+        "qty": 1,
+        "ref": "CAB1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_esp32_devkit_oled",
+    "section": "components",
+    "title": "ESP32-WROOM-32 30-Pin DevKit & I2C OLED Hardware Pair",
+    "tagline": "Dual-core 240MHz Wi-Fi + BLE IoT development board paired with compact 0.96\" SSD1306 graphic display.",
+    "category": "Microcontrollers & ICs",
+    "status": "Completed",
+    "mcu": "ESP32-WROOM-32 (Xtensa Dual-Core)",
+    "date": "2026-11-12",
     "tags": [
       "ESP32",
-      "Xtensa",
       "Wi-Fi",
+      "Bluetooth",
       "BLE",
-      "AI Acceleration",
-      "QFN56"
-    ],
-    "description": "The ESP32-S3 is a high-performance system-on-chip with dual-core 240 MHz MCU, support for 384 KB ROM, 512 KB SRAM, integrated USB-OTG, and hardware vector instructions for neural network computing.\n\nKey Specs:\n- Clock: Up to 240 MHz\n- Wi-Fi: 802.11 b/g/n\n- Bluetooth: LE 5.0 + Mesh\n- Hardware Security: Flash encryption, cryptographic accelerator, secure boot",
-    "photos": [],
-    "bom": [
-      {
-        "name": "ESP32-S3 Chip (QFN-56)",
-        "qty": 1,
-        "ref": "U1",
-        "link": "https://www.espressif.com"
-      },
-      {
-        "name": "10uF 0805 Decoupling Cap",
-        "qty": 2,
-        "ref": "C1, C2",
-        "link": ""
-      },
-      {
-        "name": "0.1uF 0402 Bypass Cap",
-        "qty": 4,
-        "ref": "C3-C6",
-        "link": ""
-      }
-    ],
-    "githubUrl": "",
-    "cadUrl": "",
-    "codeSnippets": [],
-    "workflow": []
-  },
-  {
-    "id": "comp_mpu6050",
-    "section": "components",
-    "title": "MPU-6050 6-Axis MotionTracking Sensor IC",
-    "tagline": "Integrated 3-axis accelerometer and 3-axis gyroscope with internal Digital Motion Processor (DMP).",
-    "category": "Sensors & Transducers",
-    "status": "Completed",
-    "mcu": "I2C Interface (0x68 / 0x69)",
-    "date": "2026-09-20",
-    "tags": [
-      "MPU6050",
-      "IMU",
-      "Gyroscope",
-      "Accelerometer",
+      "OLED",
+      "SSD1306",
       "I2C",
-      "Air Mouse"
+      "IoT"
     ],
-    "description": "The MPU-6050 combines a 3-axis MEMS accelerometer and a 3-axis MEMS gyroscope on the same silicon die. Used widely for gesture recognition, drones, balancing robots, and our ESP32 Air Mouse project.\n\nKey Specs:\n- Gyroscope: +/-250 to +/-2000 deg/sec\n- Accelerometer: +/-2g to +/-16g\n- Digital Motion Processor (DMP) offloads complex sensor fusion math",
-    "photos": [],
+    "description": "High performance IoT microcontroller paired directly with a miniature display interface for telemetry and edge computation.\n\nCore Capabilities:\n- Tensilica Xtensa Dual-Core 32-bit LX6 microprocessor running up to 240 MHz.\n- Integrated 802.11 b/g/n Wi-Fi baseband and dual-mode Bluetooth (Classic + BLE).\n- 520 KB SRAM with 4MB SPI Flash memory.\n- Paired with 0.96\" monochrome I2C OLED display (128x64 pixels) on GPIO 21 (SDA) and GPIO 22 (SCL).\n- Perfect for wearable devices, smart sensors, and local status dashboards.",
+    "photos": [
+      "assets/images/comp-esp32-devkit-oled-combo.jpg",
+      "assets/images/comp-ssd1306-oled-display.jpg"
+    ],
     "bom": [
       {
-        "name": "MPU-6050 IC (QFN-24)",
+        "name": "ESP32 30-Pin DevKit V1",
         "qty": 1,
         "ref": "U1",
         "link": ""
       },
       {
-        "name": "4.7k Pull-up Resistors (SDA/SCL)",
-        "qty": 2,
-        "ref": "R1, R2",
+        "name": "0.96\" SSD1306 OLED Display (4-Pin I2C)",
+        "qty": 1,
+        "ref": "DISP1",
         "link": ""
       }
     ],
-    "githubUrl": "https://github.com/dipanr705-12/esp32-air-mouse",
+    "githubUrl": "https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world",
     "cadUrl": "",
     "codeSnippets": [],
     "workflow": []
   },
   {
-    "id": "mod_lora_sx1262",
-    "section": "modules",
-    "title": "SX1262 868/915MHz LoRa Transceiver Module",
-    "tagline": "Long-range ultra-low power wireless breakout board with IPEX/SMA antenna connector.",
-    "category": "Wireless & RF Modules",
+    "id": "comp_l298n_driver",
+    "section": "components",
+    "title": "L298N Dual Full-Bridge High-Power DC & Stepper Motor Driver",
+    "tagline": "Heavy-duty dual H-bridge driver module equipped with extruded aluminum heatsink and 5V step-down regulator.",
+    "category": "Power & Motor Drivers",
     "status": "Completed",
-    "mcu": "SPI Bus Interface",
-    "date": "2026-10-18",
+    "mcu": "5V TTL Logic Level Compatible",
+    "date": "2026-11-12",
     "tags": [
-      "LoRa",
-      "SX1262",
-      "Wireless",
-      "SPI",
-      "Telemetry",
-      "Long Range"
-    ],
-    "description": "Breakout module built around Semtech SX1262 LoRa core for long-range telemetry. Enables line-of-sight packet transmission over 10+ kilometers with minimal power consumption, ideal for agricultural IoT and remote sensors.",
-    "photos": [],
-    "bom": [
-      {
-        "name": "SX1262 LoRa Breakout Board",
-        "qty": 1,
-        "ref": "MOD1",
-        "link": ""
-      },
-      {
-        "name": "868MHz 3dBi SMA Antenna",
-        "qty": 1,
-        "ref": "ANT1",
-        "link": ""
-      }
-    ],
-    "githubUrl": "",
-    "cadUrl": "",
-    "codeSnippets": [],
-    "workflow": []
-  },
-  {
-    "id": "mod_drv8871_motor",
-    "section": "modules",
-    "title": "DRV8871 3.6A Brushed DC Motor Driver Module",
-    "tagline": "H-bridge motor driver breakout supporting 6.5V to 45V with onboard current regulation.",
-    "category": "Motor Drivers & Actuators",
-    "status": "Completed",
-    "mcu": "PWM / Logic Level 3.3V/5V",
-    "date": "2026-08-30",
-    "tags": [
-      "DRV8871",
+      "L298N",
       "Motor Driver",
       "H-Bridge",
       "Robotics",
-      "PWM"
+      "DC Motors",
+      "Stepper",
+      "Heatsink"
     ],
-    "description": "Compact high-power motor driver module suitable for driving rovers, robotics DC actuators, and solenoids. Features built-in thermal protection, under-voltage lockout, and precise adjustable current limiting.",
-    "photos": [],
+    "description": "The industry workhorse L298N dual full-bridge motor driver module designed to drive inductive loads such as DC gear motors, stepper motors, and solenoids.\n\nKey Specifications:\n- Driver Chip: L298N Dual H-Bridge IC\n- Motor Drive Voltage (Vs): +5V to +35V DC\n- Peak Output Current: 2A per channel (with thermal dissipation)\n- Onboard 78M05 5V linear voltage regulator for logic rail supply with jumper enable\n- Heavy-duty extruded black aluminum heatsink for heat dissipation under continuous heavy load.\n- Screw terminal blocks for high-current battery power input and motor outputs OUT1-OUT4.",
+    "photos": [
+      "assets/images/comp-l298n-dual-motor-driver.jpg"
+    ],
     "bom": [
       {
-        "name": "DRV8871 Breakout Board",
+        "name": "L298N Dual Motor Driver Board",
         "qty": 1,
         "ref": "MOD1",
         "link": ""
       },
       {
-        "name": "Screw Terminal Blocks 2-Pin",
+        "name": "Aluminum Heatsink & Mounting Hardware",
+        "qty": 1,
+        "ref": "HS1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_l293d_module",
+    "section": "components",
+    "title": "L293D Dual H-Bridge Motor Driver Module with Status LEDs",
+    "tagline": "Compact DIP-16 motor driver board with indicator LEDs, dual terminal blocks, and logic control headers.",
+    "category": "Power & Motor Drivers",
+    "status": "Completed",
+    "mcu": "Logic: 5V / Motor: Up to 36V",
+    "date": "2026-11-12",
+    "tags": [
+      "L293D",
+      "Motor Driver",
+      "H-Bridge",
+      "Robotics",
+      "DIP-16",
+      "Indicator LEDs"
+    ],
+    "description": "A compact and reliable dual motor controller built around the classic L293D monolithic integrated push-pull driver IC.\n\nFeatures:\n- Dual channel H-bridge architecture delivering up to 600mA continuous current per channel (1.2A peak).\n- Internal clamp diodes for back-EMF protection against inductive voltage spikes.\n- Onboard dual color status indicator LEDs (+12V rail Green LED and +5V rail Red LED).\n- Dual green screw terminal blocks for motor phase wiring and dedicated pin headers for directional logic control (M1.a, M1.b, M2.a, M2.b).",
+    "photos": [
+      "assets/images/comp-l293d-motor-driver-module.jpg"
+    ],
+    "bom": [
+      {
+        "name": "L293D Dual Motor Driver Breakout Board",
+        "qty": 1,
+        "ref": "MOD1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_bo_gearmotor_wheel",
+    "section": "components",
+    "title": "Yellow Dual-Shaft BO DC Gearmotors with Rubber Tread Wheels",
+    "tagline": "High-torque 3-6V DC gearbox motors with dual drive shafts and 65mm rubber grip tires for mobile robotics.",
+    "category": "Power & Motor Drivers",
+    "status": "Completed",
+    "mcu": "3V - 6V DC Voltage Supply",
+    "date": "2026-11-12",
+    "tags": [
+      "BO Motor",
+      "Gearbox",
+      "Robotics",
+      "Wheels",
+      "Actuators",
+      "DC Motor",
+      "2WD Car"
+    ],
+    "description": "Standard yellow plastic geared hobby DC motors widely utilized in line-followers, obstacle avoidance cars, and differential drive robotics platforms.\n\nSpecifications:\n- Operating Voltage: 3V to 6V DC (recommended 4.5V - 6V)\n- Reduction Ratio: 1:48 internal spur gearbox\n- Dual straight output shafts allowing wheel mounting on one side and optical encoder disc on the other\n- Includes 65mm diameter rubber tread tires offering excellent grip and traction on smooth surfaces.",
+    "photos": [
+      "assets/images/comp-bo-gearmotors-wheels.jpg"
+    ],
+    "bom": [
+      {
+        "name": "Yellow BO Dual-Shaft DC Gearmotor",
         "qty": 2,
-        "ref": "J1, J2",
+        "ref": "M1, M2",
+        "link": ""
+      },
+      {
+        "name": "65mm Rubber Grip Wheels",
+        "qty": 2,
+        "ref": "W1, W2",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_hc_sr04_sensor",
+    "section": "components",
+    "title": "HC-SR04 Ultrasonic Distance Sensor Transducer Module",
+    "tagline": "Contactless acoustic sonar rangefinder with 2cm to 400cm detection range and 3mm resolution.",
+    "category": "Sensors & Transducers",
+    "status": "Completed",
+    "mcu": "5V TTL Trigger / Echo Pulse",
+    "date": "2026-11-12",
+    "tags": [
+      "HC-SR04",
+      "Ultrasonic",
+      "Sonar",
+      "Sensors",
+      "Rangefinder",
+      "Distance Meter",
+      "Transducer"
+    ],
+    "description": "The HC-SR04 module provides 2cm to 400cm non-contact distance measurement with accuracy up to 3mm.\n\nHow It Operates:\n- Includes ultrasonic transmitter, receiver, and control circuit on a compact dual-can PCB.\n- Host controller sends a 10 microsecond HIGH pulse on the TRIG pin.\n- Transducer automatically emits eight 40 kHz ultrasound sound pulses and awaits echo reflection.\n- ECHO output pin remains HIGH for duration of acoustic round-trip flight: Distance = (Echo High Time * 340 m/s) / 2.",
+    "photos": [
+      "assets/images/comp-hc-sr04-ultrasonic.jpg"
+    ],
+    "bom": [
+      {
+        "name": "HC-SR04 Ultrasonic Sensor Module",
+        "qty": 1,
+        "ref": "SEN1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_mb102_power_supply",
+    "section": "components",
+    "title": "MB102 Solderless Breadboard Power Supply Module (3.3V / 5V)",
+    "tagline": "Dual-rail plug-in breadboard power module with DC barrel jack, USB output, and selectable voltage jumpers.",
+    "category": "Power & Motor Drivers",
+    "status": "Completed",
+    "mcu": "Input: 6.5V - 12V DC / Output: 3.3V, 5V",
+    "date": "2026-11-12",
+    "tags": [
+      "MB102",
+      "Power Supply",
+      "Breadboard",
+      "Voltage Regulator",
+      "AMS1117",
+      "3.3V",
+      "5V"
+    ],
+    "description": "A convenient plug-in power supply adapter engineered to snap directly onto standard 830-point and 400-point solderless breadboard power buses.\n\nKey Features:\n- Dual independent rail control: configure left and right breadboard power rails independently to 0V, 3.3V, or 5V using onboard jumpers.\n- Input Voltage: 6.5V - 12V via 2.1mm DC barrel jack or USB power input.\n- Dual AMS1117 low-dropout linear regulators providing clean, ripple-suppressed DC current up to 700mA.\n- On/Off mechanical latching push switch with green power indicator LED.",
+    "photos": [
+      "assets/images/comp-mb102-breadboard-power-supply.jpg"
+    ],
+    "bom": [
+      {
+        "name": "MB102 Breadboard Power Supply Board",
+        "qty": 1,
+        "ref": "PSU1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_ssd1306_oled",
+    "section": "components",
+    "title": "0.96\" I2C Monochrome Graphic OLED Display (128x64 SSD1306)",
+    "tagline": "High-contrast self-illuminating graphical display module requiring only two I2C communication wires.",
+    "category": "Sensors & Transducers",
+    "status": "Completed",
+    "mcu": "I2C Interface (Address 0x3C)",
+    "date": "2026-11-12",
+    "tags": [
+      "OLED",
+      "SSD1306",
+      "I2C",
+      "128x64",
+      "Display",
+      "Monochrome",
+      "Wearables"
+    ],
+    "description": "A vivid 0.96-inch OLED screen driven by the SSD1306 controller IC. Because OLED pixels emit their own light without requiring a backlight, it offers deep true blacks and wide viewing angles (>160 degrees) while consuming minimal power.\n\nPinout:\n- GND: Ground\n- VCC: 3.3V - 5V Power Supply\n- SCL: I2C Clock\n- SDA: I2C Data",
+    "photos": [
+      "assets/images/comp-ssd1306-oled-display.jpg"
+    ],
+    "bom": [
+      {
+        "name": "0.96\" I2C SSD1306 OLED Display Module",
+        "qty": 1,
+        "ref": "DISP1",
         "link": ""
       }
     ],
@@ -452,7 +601,7 @@ const SEED_PROJECTS = [
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const CURRENT_STORAGE_VERSION = "v5_clean_zero_stock_photos";
+    const CURRENT_STORAGE_VERSION = "v6_real_components_lab_photos";
     const currentVersion = localStorage.getItem("circuitr_version");
     if (currentVersion !== CURRENT_STORAGE_VERSION) {
       // Overwrite previous stale sample projects so real projects show up immediately
