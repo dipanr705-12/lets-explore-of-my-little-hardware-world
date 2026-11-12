@@ -595,13 +595,214 @@ const SEED_PROJECTS = [
     "cadUrl": "",
     "codeSnippets": [],
     "workflow": []
+  },
+  {
+    "id": "mod_l298n_driver",
+    "section": "modules",
+    "title": "L298N Dual H-Bridge Motor Driver Module with Heatsink",
+    "tagline": "High-power 2A dual motor driver board with onboard 5V regulator and heat dissipation fins.",
+    "category": "Motor Drivers & Actuators",
+    "status": "Completed",
+    "mcu": "PWM / TTL 5V Directional Control",
+    "date": "2026-11-12",
+    "tags": [
+      "L298N",
+      "Motor Driver",
+      "H-Bridge",
+      "Robotics",
+      "DC Motor",
+      "Actuators"
+    ],
+    "description": "A breakout module housing the ST L298N dual full-bridge driver. Designed for controlling inductive loads like DC motors and bipolar stepper motors.\n- Operating Range: 5V - 35V DC\n- Current: Up to 2A continuous per channel\n- Integrated 5V power supply rail for microcontroller logic.",
+    "photos": [
+      "assets/images/comp-l298n-dual-motor-driver.jpg"
+    ],
+    "bom": [
+      {
+        "name": "L298N Motor Driver Module",
+        "qty": 1,
+        "ref": "MOD1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_l293d_driver",
+    "section": "modules",
+    "title": "L293D Dual DC Motor Controller Breakout Module",
+    "tagline": "Dual motor driver breakout with screw terminals and independent power rail status LEDs.",
+    "category": "Motor Drivers & Actuators",
+    "status": "Completed",
+    "mcu": "Directional Inputs M1.a, M1.b, M2.a, M2.b",
+    "date": "2026-11-12",
+    "tags": [
+      "L293D",
+      "Motor Driver",
+      "Robotics",
+      "Dual Channel",
+      "Terminal Blocks"
+    ],
+    "description": "Compact motor driver breakout utilizing the L293D quadrupled half-H driver. Features status LEDs on +12V and +5V rails and internal clamping diodes for back-EMF suppression.",
+    "photos": [
+      "assets/images/comp-l293d-motor-driver-module.jpg"
+    ],
+    "bom": [
+      {
+        "name": "L293D Driver Module",
+        "qty": 1,
+        "ref": "MOD1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_mb102_psu",
+    "section": "modules",
+    "title": "MB102 Breadboard Power Supply Module (3.3V / 5V)",
+    "tagline": "Dual-rail plug-in regulator board with DC barrel jack and dual selectable voltage buses.",
+    "category": "Power & Charging Modules",
+    "status": "Completed",
+    "mcu": "Input 6.5V - 12V DC / Outputs 3.3V & 5V",
+    "date": "2026-11-12",
+    "tags": [
+      "MB102",
+      "Power Supply",
+      "Breadboard Module",
+      "AMS1117",
+      "5V",
+      "3.3V"
+    ],
+    "description": "Custom-fit power supply module for standard solderless breadboards. Allows independent rail selection of 0V, 3.3V, or 5V with USB power output port and hardware latching switch.",
+    "photos": [
+      "assets/images/comp-mb102-breadboard-power-supply.jpg"
+    ],
+    "bom": [
+      {
+        "name": "MB102 Power Supply Module",
+        "qty": 1,
+        "ref": "PSU1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_ssd1306_oled",
+    "section": "modules",
+    "title": "0.96\" I2C Monochrome Graphic OLED Display Module",
+    "tagline": "128x64 high-contrast blue/white OLED display module communicating over 2-wire I2C.",
+    "category": "Display & Audio Modules",
+    "status": "Completed",
+    "mcu": "I2C Interface (Address 0x3C)",
+    "date": "2026-11-12",
+    "tags": [
+      "OLED",
+      "SSD1306",
+      "I2C",
+      "Display Module",
+      "128x64"
+    ],
+    "description": "Self-emissive 0.96-inch OLED screen breakout with 128x64 pixel resolution. High contrast ratio, wide viewing angle, and low energy consumption.",
+    "photos": [
+      "assets/images/comp-ssd1306-oled-display.jpg"
+    ],
+    "bom": [
+      {
+        "name": "0.96\" SSD1306 OLED Breakout",
+        "qty": 1,
+        "ref": "DISP1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_hc_sr04_ultrasonic",
+    "section": "modules",
+    "title": "HC-SR04 Ultrasonic Sonar Rangefinder Module",
+    "tagline": "Non-contact acoustic distance measurement transducer board with 2cm to 400cm range.",
+    "category": "Interface & Shields",
+    "status": "Completed",
+    "mcu": "Trigger / Echo Pulse Interface",
+    "date": "2026-11-12",
+    "tags": [
+      "HC-SR04",
+      "Ultrasonic",
+      "Sonar",
+      "Sensors",
+      "Distance Module"
+    ],
+    "description": "Acoustic rangefinder module featuring transmitter and receiver transducer cans with on-board oscillator and timing circuitry.",
+    "photos": [
+      "assets/images/comp-hc-sr04-ultrasonic.jpg"
+    ],
+    "bom": [
+      {
+        "name": "HC-SR04 Sonar Module",
+        "qty": 1,
+        "ref": "SEN1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_esp32_devkit",
+    "section": "modules",
+    "title": "ESP32-WROOM-32 Wi-Fi & Bluetooth IoT Development Board",
+    "tagline": "Dual-core 240MHz wireless IoT system module with integrated USB-UART CP2102 interface.",
+    "category": "Wireless & RF Modules",
+    "status": "Completed",
+    "mcu": "ESP32-WROOM-32 Module",
+    "date": "2026-11-12",
+    "tags": [
+      "ESP32",
+      "Wireless",
+      "Wi-Fi",
+      "BLE",
+      "RF Module",
+      "IoT"
+    ],
+    "description": "Comprehensive 30-pin development breakout module for Espressif's ESP32 SoC. Includes PCB trace antenna, onboard 3.3V LDO, and USB programming interface.",
+    "photos": [
+      "assets/images/comp-esp32-devkit-oled-combo.jpg"
+    ],
+    "bom": [
+      {
+        "name": "ESP32 DevKit Module",
+        "qty": 1,
+        "ref": "U1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
   }
 ];
 
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const CURRENT_STORAGE_VERSION = "v6_real_components_lab_photos";
+    const CURRENT_STORAGE_VERSION = "v7_real_modules_lab_photos";
     const currentVersion = localStorage.getItem("circuitr_version");
     if (currentVersion !== CURRENT_STORAGE_VERSION) {
       // Overwrite previous stale sample projects so real projects show up immediately
