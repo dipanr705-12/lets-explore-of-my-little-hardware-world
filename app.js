@@ -802,19 +802,23 @@ const SEED_PROJECTS = [
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const CURRENT_STORAGE_VERSION = "v7_real_modules_lab_photos";
-    const currentVersion = localStorage.getItem("circuitr_version");
-    if (currentVersion !== CURRENT_STORAGE_VERSION) {
-      // Overwrite previous stale sample projects so real projects show up immediately
-      projects = [...SEED_PROJECTS];
-      localStorage.setItem("circuitr_version", CURRENT_STORAGE_VERSION);
-      saveProjects();
+    const saved = localStorage.getItem("circuitr_projects");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const hasOldDummyModules = parsed.some(p => p.id === "mod_lora_sx1262" || p.id === "mod_drv8871_motor");
+      if (hasOldDummyModules || localStorage.getItem("circuitr_version") !== "v8_fresh_cache") {
+        projects = [...SEED_PROJECTS];
+        localStorage.setItem("circuitr_version", "v8_fresh_cache");
+        saveProjects();
+        return;
+      }
+      projects = parsed;
     } else {
-      const saved = localStorage.getItem("circuitr_projects");
-      projects = saved ? JSON.parse(saved) : [...SEED_PROJECTS];
+      projects = [...SEED_PROJECTS];
+      saveProjects();
     }
   } catch (err) {
-    console.warn("LocalStorage error, fallback to seeds:", err);
+    console.warn("LocalStorage error:", err);
     projects = [...SEED_PROJECTS];
   }
 }
