@@ -19,7 +19,7 @@ let modalWorkflowSteps = [];
 
 // Sample Seed Data for Instant Exploration
 const SEED_PROJECTS = [
-{
+  {
     "id": "proj_esp32_ble_oled",
     "section": "projects",
     "title": "ESP32 Bluetooth Serial (SPP/BLE) with 0.96\" I2C OLED & Terminal Controller",
@@ -291,358 +291,188 @@ const SEED_PROJECTS = [
     ]
   },
   {
-    id: 'proj_esp32_rover',
-    section: 'projects',
-    title: 'Autonomous LiDAR Navigation Rover',
-    tagline: 'Dual BLDC indoor SLAM rover powered by ESP32-S3 and RPLiDAR A1 with FreeRTOS multitasking.',
-    category: 'Robotics',
-    status: 'Completed',
-    mcu: 'ESP32-S3 WROOM-1',
-    date: '2026-09-15',
-    tags: ['ESP32', 'Robotics', 'LiDAR', 'FreeRTOS', 'C++', 'SLAM', '3D Printing'],
-    description: `This autonomous ground vehicle performs indoor 2D SLAM (Simultaneous Localization and Mapping) and obstacle avoidance.
-    
-Powered by an ESP32-S3 dual-core microcontroller running FreeRTOS:
-- Core 0 parses high-frequency serial streams from the RPLiDAR A1 (8000 samples/sec).
-- Core 1 handles optical encoder feedback, dual PID velocity loops, and Wi-Fi WebSockets telemetry.
-The power train consists of two 12V metal gearmotors driven by an integrated DRV8871 H-bridge board, supplied by a 3S 18650 Li-ion battery pack with onboard BMS.`,
-    photos: [
-      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=1200&q=80'
+    "id": "comp_esp32_s3",
+    "section": "components",
+    "title": "ESP32-S3 Microcontroller IC / SoC",
+    "tagline": "Dual-core Xtensa 32-bit LX7 MCU with 2.4 GHz Wi-Fi & Bluetooth 5 (LE), AI vector acceleration.",
+    "category": "Microcontrollers & ICs",
+    "status": "Completed",
+    "mcu": "Espressif ESP32-S3 (QFN-56)",
+    "date": "2026-10-10",
+    "tags": [
+      "ESP32",
+      "Xtensa",
+      "Wi-Fi",
+      "BLE",
+      "AI Acceleration",
+      "QFN56"
     ],
-    bom: [
-      { name: 'ESP32-S3 Dev Module', qty: 1, ref: 'U1', link: 'https://espressif.com' },
-      { name: 'RPLiDAR A1 360° Laser Scanner', qty: 1, ref: 'LIDAR1', link: 'https://slamtec.com' },
-      { name: 'DRV8871 Dual H-Bridge Driver', qty: 2, ref: 'U2, U3', link: 'https://ti.com' },
-      { name: '12V DC Metal Gearmotor with Encoder', qty: 2, ref: 'M1, M2', link: 'https://pololu.com' },
-      { name: '3S 18650 Li-ion 11.1V 2600mAh Pack', qty: 1, ref: 'BAT1', link: '' },
-      { name: 'LM2596 DC-DC Step Down (5V/3A)', qty: 1, ref: 'VR1', link: '' }
+    "description": "The ESP32-S3 is a high-performance system-on-chip with dual-core 240 MHz MCU, support for 384 KB ROM, 512 KB SRAM, integrated USB-OTG, and hardware vector instructions for neural network computing.\n\nKey Specs:\n- Clock: Up to 240 MHz\n- Wi-Fi: 802.11 b/g/n\n- Bluetooth: LE 5.0 + Mesh\n- Hardware Security: Flash encryption, cryptographic accelerator, secure boot",
+    "photos": [
+      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
     ],
-    githubUrl: 'https://github.com/example/esp32-lidar-rover',
-    cadUrl: 'https://cad.onshape.com/example/rover-chassis-v2',
-    codeSnippets: [
+    "bom": [
       {
-        fileName: 'lidar_task.cpp',
-        language: 'cpp',
-        code: `#include <Arduino.h>
-#include <RPLidar.h>
-
-#define LIDAR_RX 16
-#define LIDAR_TX 17
-#define LIDAR_MOTOR_PIN 18
-
-RPLidar lidar;
-
-void taskLiDAR(void *pvParameters) {
-    Serial1.begin(115200, SERIAL_8N1, LIDAR_RX, LIDAR_TX);
-    lidar.begin(Serial1);
-    pinMode(LIDAR_MOTOR_PIN, OUTPUT);
-    digitalWrite(LIDAR_MOTOR_PIN, HIGH); // Spin LiDAR head
-
-    for (;;) {
-        if (IS_OK(lidar.waitPoint())) {
-            float distance = lidar.getCurrentPoint().distance; // mm
-            float angle    = lidar.getCurrentPoint().angle;    // degrees
-            bool  startBit = lidar.getCurrentPoint().startBit;
-            
-            if (distance > 100.0 && distance < 6000.0) {
-                // Forward scan data to SLAM queue
-            }
-        }
-        vTaskDelay(1 / portTICK_PERIOD_MS);
-    }
-}`
+        "name": "ESP32-S3 Chip (QFN-56)",
+        "qty": 1,
+        "ref": "U1",
+        "link": "https://www.espressif.com"
       },
       {
-        fileName: 'motor_pid.cpp',
-        language: 'cpp',
-        code: `// Dual channel PID loop for differential steering
-float Kp = 2.4, Ki = 0.12, Kd = 0.05;
-
-void computeMotorPID(float targetRPM, float currentRPM, int pwmPin) {
-    static float prevError = 0;
-    static float integral = 0;
-    
-    float error = targetRPM - currentRPM;
-    integral += error;
-    float derivative = error - prevError;
-    
-    float output = (Kp * error) + (Ki * integral) + (Kd * derivative);
-    output = constrain(output, 0, 255);
-    analogWrite(pwmPin, (int)output);
-    prevError = error;
-}`
-      }
-    ],
-    workflow: [
-      {
-        title: 'Chassis Modeling & 3D Printing',
-        description: 'Modeled differential drive chassis in CAD with vibration-dampened silicone grommets for the LiDAR mounting shelf. Sliced with PETG filament for rigidity and impact resistance.',
-        image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80'
+        "name": "10uF 0805 Decoupling Cap",
+        "qty": 2,
+        "ref": "C1, C2",
+        "link": ""
       },
       {
-        title: 'Power Rail & Buck Converter Calibration',
-        description: 'Tuned LM2596 switching regulator to a clean 5.08V DC output. Verified low-ripple rail on oscilloscope during motor stall tests (max peak ripple under 45mV).',
-        image: ''
+        "name": "0.1uF 0402 Bypass Cap",
+        "qty": 4,
+        "ref": "C3-C6",
+        "link": ""
+      }
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "comp_mpu6050",
+    "section": "components",
+    "title": "MPU-6050 6-Axis MotionTracking Sensor IC",
+    "tagline": "Integrated 3-axis accelerometer and 3-axis gyroscope with internal Digital Motion Processor (DMP).",
+    "category": "Sensors & Transducers",
+    "status": "Completed",
+    "mcu": "I2C Interface (0x68 / 0x69)",
+    "date": "2026-09-20",
+    "tags": [
+      "MPU6050",
+      "IMU",
+      "Gyroscope",
+      "Accelerometer",
+      "I2C",
+      "Air Mouse"
+    ],
+    "description": "The MPU-6050 combines a 3-axis MEMS accelerometer and a 3-axis MEMS gyroscope on the same silicon die. Used widely for gesture recognition, drones, balancing robots, and our ESP32 Air Mouse project.\n\nKey Specs:\n- Gyroscope: +/-250 to +/-2000 deg/sec\n- Accelerometer: +/-2g to +/-16g\n- Digital Motion Processor (DMP) offloads complex sensor fusion math",
+    "photos": [
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "bom": [
+      {
+        "name": "MPU-6050 IC (QFN-24)",
+        "qty": 1,
+        "ref": "U1",
+        "link": ""
       },
       {
-        title: 'Hardware Interrupt & Encoder Tuning',
-        description: 'Wired Hall effect quadrature encoder lines to ESP32 interrupt pins (GPIO 34 & 35). Configured hardware timers for 50Hz control loop frequency.',
-        image: ''
+        "name": "4.7k Pull-up Resistors (SDA/SCL)",
+        "qty": 2,
+        "ref": "R1, R2",
+        "link": ""
+      }
+    ],
+    "githubUrl": "https://github.com/dipanr705-12/esp32-air-mouse",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
+  },
+  {
+    "id": "mod_lora_sx1262",
+    "section": "modules",
+    "title": "SX1262 868/915MHz LoRa Transceiver Module",
+    "tagline": "Long-range ultra-low power wireless breakout board with IPEX/SMA antenna connector.",
+    "category": "Wireless & RF Modules",
+    "status": "Completed",
+    "mcu": "SPI Bus Interface",
+    "date": "2026-10-18",
+    "tags": [
+      "LoRa",
+      "SX1262",
+      "Wireless",
+      "SPI",
+      "Telemetry",
+      "Long Range"
+    ],
+    "description": "Breakout module built around Semtech SX1262 LoRa core for long-range telemetry. Enables line-of-sight packet transmission over 10+ kilometers with minimal power consumption, ideal for agricultural IoT and remote sensors.",
+    "photos": [
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "bom": [
+      {
+        "name": "SX1262 LoRa Breakout Board",
+        "qty": 1,
+        "ref": "MOD1",
+        "link": ""
       },
       {
-        title: 'Obstacle Avoidance & Web Telemetry',
-        description: 'Created an async web server on ESP32 streaming real-time 2D lidar polar charts over WebSockets at 15 FPS.',
-        image: ''
+        "name": "868MHz 3dBi SMA Antenna",
+        "qty": 1,
+        "ref": "ANT1",
+        "link": ""
       }
-    ]
+    ],
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
   },
   {
-    id: 'proj_hydroponics_lora',
-    section: 'projects',
-    title: 'Solar LoRa Hydroponics Telemetry Hub',
-    tagline: 'Ultralow-power agricultural sensor node logging EC, pH, water temp, and sunlight over 12km LoRa.',
-    category: 'IoT & Sensors',
-    status: 'Completed',
-    mcu: 'RP2040 Pico + SX1262',
-    date: '2026-10-02',
-    tags: ['RP2040', 'LoRa', 'MicroPython', 'Sensors', 'Agriculture', 'Solar'],
-    description: `A weatherproof outdoor agricultural monitor for automated hydroponic greenhouses.
-    
-It measures water electrical conductivity (EC), pH probe readings, DS18B20 liquid temperature, and ambient humidity/temperature. Broadcasts encoded telemetry packets over SX1262 LoRa (868/915 MHz) back to an indoor base station up to 12km line-of-sight. Powered by a 2W monocrystalline solar cell and 2000mAh LiFePO4 battery.`,
-    photos: [
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
+    "id": "mod_drv8871_motor",
+    "section": "modules",
+    "title": "DRV8871 3.6A Brushed DC Motor Driver Module",
+    "tagline": "H-bridge motor driver breakout supporting 6.5V to 45V with onboard current regulation.",
+    "category": "Motor Drivers & Actuators",
+    "status": "Completed",
+    "mcu": "PWM / Logic Level 3.3V/5V",
+    "date": "2026-08-30",
+    "tags": [
+      "DRV8871",
+      "Motor Driver",
+      "H-Bridge",
+      "Robotics",
+      "PWM"
     ],
-    bom: [
-      { name: 'Raspberry Pi Pico (RP2040)', qty: 1, ref: 'MCU1', link: '' },
-      { name: 'Waveshare SX1262 LoRa Module', qty: 1, ref: 'MOD1', link: '' },
-      { name: 'Analog pH Sensor Kit (V2.0)', qty: 1, ref: 'SEN1', link: '' },
-      { name: 'DS18B20 Waterproof Temp Probe', qty: 1, ref: 'SEN2', link: '' },
-      { name: 'CN3791 MPPT Solar Charger Board', qty: 1, ref: 'CHG1', link: '' },
-      { name: '3.2V 2000mAh LiFePO4 Battery', qty: 1, ref: 'BAT1', link: '' }
+    "description": "Compact high-power motor driver module suitable for driving rovers, robotics DC actuators, and solenoids. Features built-in thermal protection, under-voltage lockout, and precise adjustable current limiting.",
+    "photos": [
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80"
     ],
-    githubUrl: 'https://github.com/example/lora-hydro-monitor',
-    cadUrl: '',
-    codeSnippets: [
+    "bom": [
       {
-        fileName: 'main.py',
-        language: 'python',
-        code: `import time
-from machine import Pin, ADC
-import sx1262
-
-# Sensor pin mapping
-ph_adc = ADC(Pin(26))
-temp_pin = Pin(22)
-
-lora = sx1262.SX1262(spi_bus=0, cs=17, reset=20, busy=2)
-lora.begin(freq=868.0, bw=125.0, sf=7, cr=5)
-
-def read_ph():
-    raw = ph_adc.read_u16()
-    voltage = (raw / 65535.0) * 3.3
-    # Calibrated two-point linear equation
-    ph_value = 7.0 - ((voltage - 1.65) / 0.18)
-    return round(ph_value, 2)
-
-while True:
-    current_ph = read_ph()
-    packet = f"PH:{current_ph};BATT:98%;STATUS:OK"
-    lora.send(packet.encode('utf-8'))
-    print("Transmitted:", packet)
-    time.sleep(300) # Deep sleep for 5 mins`
-      }
-    ],
-    workflow: [
-      {
-        title: 'Analog Signal Conditioning & Filtering',
-        description: 'Designed an active RC low-pass filter to isolate high-frequency switching noise from the solar converter board entering the high-impedance pH probe circuit.',
-        image: ''
+        "name": "DRV8871 Breakout Board",
+        "qty": 1,
+        "ref": "MOD1",
+        "link": ""
       },
       {
-        title: 'Field Range & Antenna Matching',
-        description: 'Tested 1/4 wave tuned SMA antenna with ground plane. Verified consistent -108 dBm RSSI at 4.2 km distance through trees.',
-        image: ''
-      }
-    ]
-  },
-  {
-    id: 'proj_split_keyboard',
-    section: 'projects',
-    title: 'Ergonomic Split Mechanical Keyboard',
-    tagline: 'Custom 42-key ortholinear hot-swap PCB running QMK/Vial with per-key RGB and dual 128x32 OLEDs.',
-    category: 'PCB & Circuits',
-    status: 'Completed',
-    mcu: 'RP2040-Zero (x2)',
-    date: '2026-08-20',
-    tags: ['PCB', 'KiCad', 'RP2040', 'QMK', 'C', 'Mechanical Keyboard'],
-    description: `A custom-engineered ergonomic split keyboard with column stagger designed in KiCad.
-    
-Features:
-- Reversible PCB layout (the same PCB works for both left and right halves).
-- Kailh Choc V2 low-profile hot-swap switch sockets.
-- Dual SSD1306 0.91" OLED displays indicating active layer, typing WPM, and keymap status.
-- Inter-half communication handled via TRRS cable with duplex UART protocol.`,
-    photos: [
-      'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=1200&q=80'
-    ],
-    bom: [
-      { name: 'Custom Reversible 2-Layer PCB', qty: 2, ref: 'PCB-L/R', link: '' },
-      { name: 'RP2040-Zero Controller', qty: 2, ref: 'U1, U2', link: '' },
-      { name: '1N4148W SOD-123 Diodes', qty: 42, ref: 'D1-D42', link: '' },
-      { name: 'Kailh Choc V2 Switches', qty: 42, ref: 'SW1-SW42', link: '' },
-      { name: '0.91" I2C OLED 128x32', qty: 2, ref: 'DISP1, DISP2', link: '' }
-    ],
-    githubUrl: 'https://github.com/example/split-ortho-qmk',
-    cadUrl: 'https://github.com/example/split-ortho-kicad',
-    codeSnippets: [
-      {
-        fileName: 'keymap.c',
-        language: 'cpp',
-        code: `#include QMK_KEYBOARD_H
-
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT_split_3x6_3(
-        KC_TAB,  KC_Q, KC_W, KC_E, KC_R, KC_T,           KC_Y, KC_U, KC_I,    KC_O,   KC_P,    KC_BSPC,
-        KC_LCTL, KC_A, KC_S, KC_D, KC_F, KC_G,           KC_H, KC_J, KC_K,    KC_L,   KC_SCLN, KC_QUOT,
-        KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B,           KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_ESC,
-                         KC_LGUI, MO(1), KC_SPC,       KC_ENT, MO(2), KC_RALT
-    )
-};`
+        "name": "Screw Terminal Blocks 2-Pin",
+        "qty": 2,
+        "ref": "J1, J2",
+        "link": ""
       }
     ],
-    workflow: [
-      {
-        title: 'KiCad Schematic & Trace Routing',
-        description: 'Designed schematic with diode matrix (anti-ghosting). Used 0.25mm trace widths with curved 45-degree chamfers and bottom copper ground pour for signal shielding.',
-        image: ''
-      },
-      {
-        title: 'SMD Solder Paste Stenciling & Hot Air Reflow',
-        description: 'Applied lead-free SAC305 solder paste using stainless steel laser-cut stencil. Mounted all 42 SOD-123 diodes and hot-air reflowed at 245°C.',
-        image: ''
-      }
-    ]
-  },
-  // ================= 2) COMPONENTS =================
-  {
-    id: 'comp_esp32_s3',
-    section: 'components',
-    title: 'ESP32-S3 Microcontroller IC / SoC',
-    tagline: 'Dual-core Xtensa 32-bit LX7 MCU with 2.4 GHz Wi-Fi & Bluetooth 5 (LE), AI vector acceleration.',
-    category: 'Microcontrollers & ICs',
-    status: 'Completed',
-    mcu: 'Espressif ESP32-S3 (QFN-56)',
-    date: '2026-10-10',
-    tags: ['ESP32', 'Xtensa', 'Wi-Fi', 'BLE', 'AI Acceleration', 'QFN56'],
-    description: 'The ESP32-S3 is a high-performance system-on-chip with dual-core 240 MHz MCU, support for 384 KB ROM, 512 KB SRAM, integrated USB-OTG, and hardware vector instructions for neural network computing.\n\nKey Specs:\n- Clock: Up to 240 MHz\n- Wi-Fi: 802.11 b/g/n\n- Bluetooth: LE 5.0 + Mesh\n- Hardware Security: Flash encryption, cryptographic accelerator, secure boot',
-    photos: [
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
-    ],
-    bom: [
-      { name: 'ESP32-S3 Chip (QFN-56)', qty: 1, ref: 'U1', link: 'https://www.espressif.com' },
-      { name: '10uF 0805 Decoupling Cap', qty: 2, ref: 'C1, C2', link: '' },
-      { name: '0.1uF 0402 Bypass Cap', qty: 4, ref: 'C3-C6', link: '' }
-    ],
-    githubUrl: '',
-    cadUrl: '',
-    codeSnippets: [],
-    workflow: []
-  },
-  {
-    id: 'comp_mpu6050',
-    section: 'components',
-    title: 'MPU-6050 6-Axis MotionTracking Sensor IC',
-    tagline: 'Integrated 3-axis accelerometer and 3-axis gyroscope with internal Digital Motion Processor (DMP).',
-    category: 'Sensors & Transducers',
-    status: 'Completed',
-    mcu: 'I2C Interface (0x68 / 0x69)',
-    date: '2026-09-20',
-    tags: ['MPU6050', 'IMU', 'Gyroscope', 'Accelerometer', 'I2C', 'Air Mouse'],
-    description: 'The MPU-6050 combines a 3-axis MEMS accelerometer and a 3-axis MEMS gyroscope on the same silicon die. Used widely for gesture recognition, drones, balancing robots, and our ESP32 Air Mouse project.\n\nKey Specs:\n- Gyroscope: +/-250 to +/-2000 deg/sec\n- Accelerometer: +/-2g to +/-16g\n- Digital Motion Processor (DMP) offloads complex sensor fusion math',
-    photos: [
-      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80'
-    ],
-    bom: [
-      { name: 'MPU-6050 IC (QFN-24)', qty: 1, ref: 'U1', link: '' },
-      { name: '4.7k Pull-up Resistors (SDA/SCL)', qty: 2, ref: 'R1, R2', link: '' }
-    ],
-    githubUrl: 'https://github.com/dipanr705-12/esp32-air-mouse',
-    cadUrl: '',
-    codeSnippets: [],
-    workflow: []
-  },
-  // ================= 3) MODULES =================
-  {
-    id: 'mod_lora_sx1262',
-    section: 'modules',
-    title: 'SX1262 868/915MHz LoRa Transceiver Module',
-    tagline: 'Long-range ultra-low power wireless breakout board with IPEX/SMA antenna connector.',
-    category: 'Wireless & RF Modules',
-    status: 'Completed',
-    mcu: 'SPI Bus Interface',
-    date: '2026-10-18',
-    tags: ['LoRa', 'SX1262', 'Wireless', 'SPI', 'Telemetry', 'Long Range'],
-    description: 'Breakout module built around Semtech SX1262 LoRa core for long-range telemetry. Enables line-of-sight packet transmission over 10+ kilometers with minimal power consumption, ideal for agricultural IoT and remote sensors.',
-    photos: [
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80'
-    ],
-    bom: [
-      { name: 'SX1262 LoRa Breakout Board', qty: 1, ref: 'MOD1', link: '' },
-      { name: '868MHz 3dBi SMA Antenna', qty: 1, ref: 'ANT1', link: '' }
-    ],
-    githubUrl: '',
-    cadUrl: '',
-    codeSnippets: [],
-    workflow: []
-  },
-  {
-    id: 'mod_drv8871_motor',
-    section: 'modules',
-    title: 'DRV8871 3.6A Brushed DC Motor Driver Module',
-    tagline: 'H-bridge motor driver breakout supporting 6.5V to 45V with onboard current regulation.',
-    category: 'Motor Drivers & Actuators',
-    status: 'Completed',
-    mcu: 'PWM / Logic Level 3.3V/5V',
-    date: '2026-08-30',
-    tags: ['DRV8871', 'Motor Driver', 'H-Bridge', 'Robotics', 'PWM'],
-    description: 'Compact high-power motor driver module suitable for driving rovers, robotics DC actuators, and solenoids. Features built-in thermal protection, under-voltage lockout, and precise adjustable current limiting.',
-    photos: [
-      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80'
-    ],
-    bom: [
-      { name: 'DRV8871 Breakout Board', qty: 1, ref: 'MOD1', link: '' },
-      { name: 'Screw Terminal Blocks 2-Pin', qty: 2, ref: 'J1, J2', link: '' }
-    ],
-    githubUrl: '',
-    cadUrl: '',
-    codeSnippets: [],
-    workflow: []
+    "githubUrl": "",
+    "cadUrl": "",
+    "codeSnippets": [],
+    "workflow": []
   }
 ];
 
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const saved = localStorage.getItem('circuitr_projects');
-    if (saved && !localStorage.getItem('circuitr_v2_migrated')) {
-      const parsed = JSON.parse(saved);
-      const userProjectIds = new Set(['proj_esp32_ble_oled', 'proj_diy_2wd_robot_car', 'proj_blynk_distance_meter']);
-      const existingFiltered = parsed.filter(p => !userProjectIds.has(p.id));
-      projects = [...SEED_PROJECTS.slice(0, 3), ...existingFiltered];
-      localStorage.setItem('circuitr_v2_migrated', 'true');
-      saveProjects();
-    } else if (saved) {
-      projects = JSON.parse(saved);
-    } else {
+    const CURRENT_STORAGE_VERSION = "v4_real_photos_only";
+    const currentVersion = localStorage.getItem("circuitr_version");
+    if (currentVersion !== CURRENT_STORAGE_VERSION) {
+      // Overwrite previous stale sample projects so real projects show up immediately
       projects = [...SEED_PROJECTS];
+      localStorage.setItem("circuitr_version", CURRENT_STORAGE_VERSION);
       saveProjects();
+    } else {
+      const saved = localStorage.getItem("circuitr_projects");
+      projects = saved ? JSON.parse(saved) : [...SEED_PROJECTS];
     }
   } catch (err) {
-    console.warn('LocalStorage load error, using default state:', err);
+    console.warn("LocalStorage error, fallback to seeds:", err);
     projects = [...SEED_PROJECTS];
   }
 }
