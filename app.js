@@ -310,9 +310,7 @@ const SEED_PROJECTS = [
       "UART"
     ],
     "description": "The flagship Arduino Uno R3 development board powered by the Microchip ATmega328P 8-bit RISC microcontroller.\n\nKey Specifications:\n- Operating Voltage: 5V DC (Input 7-12V via Barrel Jack or USB Type-B)\n- Clock Speed: 16 MHz Quartz Crystal Oscillator\n- Flash Memory: 32 KB (0.5 KB used by bootloader)\n- SRAM: 2 KB, EEPROM: 1 KB\n- Digital I/O Pins: 14 (of which 6 provide PWM output: D3, D5, D6, D9, D10, D11)\n- Analog Input Pins: 6 (10-bit resolution ADC channels A0-A5)\n- Standard ICSP header for direct ISP in-circuit serial programming.",
-    "photos": [
-      "assets/images/comp-arduino-uno-r3.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "Arduino Uno R3 Board",
@@ -352,10 +350,7 @@ const SEED_PROJECTS = [
       "IoT"
     ],
     "description": "High performance IoT microcontroller paired directly with a miniature display interface for telemetry and edge computation.\n\nCore Capabilities:\n- Tensilica Xtensa Dual-Core 32-bit LX6 microprocessor running up to 240 MHz.\n- Integrated 802.11 b/g/n Wi-Fi baseband and dual-mode Bluetooth (Classic + BLE).\n- 520 KB SRAM with 4MB SPI Flash memory.\n- Paired with 0.96\" monochrome I2C OLED display (128x64 pixels) on GPIO 21 (SDA) and GPIO 22 (SCL).\n- Perfect for wearable devices, smart sensors, and local status dashboards.",
-    "photos": [
-      "assets/images/comp-esp32-devkit-oled-combo.jpg",
-      "assets/images/comp-ssd1306-oled-display.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "ESP32 30-Pin DevKit V1",
@@ -394,9 +389,7 @@ const SEED_PROJECTS = [
       "Heatsink"
     ],
     "description": "The industry workhorse L298N dual full-bridge motor driver module designed to drive inductive loads such as DC gear motors, stepper motors, and solenoids.\n\nKey Specifications:\n- Driver Chip: L298N Dual H-Bridge IC\n- Motor Drive Voltage (Vs): +5V to +35V DC\n- Peak Output Current: 2A per channel (with thermal dissipation)\n- Onboard 78M05 5V linear voltage regulator for logic rail supply with jumper enable\n- Heavy-duty extruded black aluminum heatsink for heat dissipation under continuous heavy load.\n- Screw terminal blocks for high-current battery power input and motor outputs OUT1-OUT4.",
-    "photos": [
-      "assets/images/comp-l298n-dual-motor-driver.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "L298N Dual Motor Driver Board",
@@ -434,9 +427,7 @@ const SEED_PROJECTS = [
       "Indicator LEDs"
     ],
     "description": "A compact and reliable dual motor controller built around the classic L293D monolithic integrated push-pull driver IC.\n\nFeatures:\n- Dual channel H-bridge architecture delivering up to 600mA continuous current per channel (1.2A peak).\n- Internal clamp diodes for back-EMF protection against inductive voltage spikes.\n- Onboard dual color status indicator LEDs (+12V rail Green LED and +5V rail Red LED).\n- Dual green screw terminal blocks for motor phase wiring and dedicated pin headers for directional logic control (M1.a, M1.b, M2.a, M2.b).",
-    "photos": [
-      "assets/images/comp-l293d-motor-driver-module.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "L293D Dual Motor Driver Breakout Board",
@@ -469,9 +460,7 @@ const SEED_PROJECTS = [
       "2WD Car"
     ],
     "description": "Standard yellow plastic geared hobby DC motors widely utilized in line-followers, obstacle avoidance cars, and differential drive robotics platforms.\n\nSpecifications:\n- Operating Voltage: 3V to 6V DC (recommended 4.5V - 6V)\n- Reduction Ratio: 1:48 internal spur gearbox\n- Dual straight output shafts allowing wheel mounting on one side and optical encoder disc on the other\n- Includes 65mm diameter rubber tread tires offering excellent grip and traction on smooth surfaces.",
-    "photos": [
-      "assets/images/comp-bo-gearmotors-wheels.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "Yellow BO Dual-Shaft DC Gearmotor",
@@ -510,9 +499,7 @@ const SEED_PROJECTS = [
       "Transducer"
     ],
     "description": "The HC-SR04 module provides 2cm to 400cm non-contact distance measurement with accuracy up to 3mm.\n\nHow It Operates:\n- Includes ultrasonic transmitter, receiver, and control circuit on a compact dual-can PCB.\n- Host controller sends a 10 microsecond HIGH pulse on the TRIG pin.\n- Transducer automatically emits eight 40 kHz ultrasound sound pulses and awaits echo reflection.\n- ECHO output pin remains HIGH for duration of acoustic round-trip flight: Distance = (Echo High Time * 340 m/s) / 2.",
-    "photos": [
-      "assets/images/comp-hc-sr04-ultrasonic.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "HC-SR04 Ultrasonic Sensor Module",
@@ -545,9 +532,7 @@ const SEED_PROJECTS = [
       "5V"
     ],
     "description": "A convenient plug-in power supply adapter engineered to snap directly onto standard 830-point and 400-point solderless breadboard power buses.\n\nKey Features:\n- Dual independent rail control: configure left and right breadboard power rails independently to 0V, 3.3V, or 5V using onboard jumpers.\n- Input Voltage: 6.5V - 12V via 2.1mm DC barrel jack or USB power input.\n- Dual AMS1117 low-dropout linear regulators providing clean, ripple-suppressed DC current up to 700mA.\n- On/Off mechanical latching push switch with green power indicator LED.",
-    "photos": [
-      "assets/images/comp-mb102-breadboard-power-supply.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "MB102 Breadboard Power Supply Board",
@@ -580,9 +565,7 @@ const SEED_PROJECTS = [
       "Wearables"
     ],
     "description": "A vivid 0.96-inch OLED screen driven by the SSD1306 controller IC. Because OLED pixels emit their own light without requiring a backlight, it offers deep true blacks and wide viewing angles (>160 degrees) while consuming minimal power.\n\nPinout:\n- GND: Ground\n- VCC: 3.3V - 5V Power Supply\n- SCL: I2C Clock\n- SDA: I2C Data",
-    "photos": [
-      "assets/images/comp-ssd1306-oled-display.jpg"
-    ],
+    "photos": [],
     "bom": [
       {
         "name": "0.96\" I2C SSD1306 OLED Display Module",
@@ -802,21 +785,16 @@ const SEED_PROJECTS = [
 // Initialize Storage (LocalStorage with fallback)
 function initStorage() {
   try {
-    const saved = localStorage.getItem("circuitr_projects");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const hasOldDummyModules = parsed.some(p => p.id === "mod_lora_sx1262" || p.id === "mod_drv8871_motor");
-      if (hasOldDummyModules || localStorage.getItem("circuitr_version") !== "v8_fresh_cache") {
-        projects = [...SEED_PROJECTS];
-        localStorage.setItem("circuitr_version", "v8_fresh_cache");
-        saveProjects();
-        return;
-      }
-      projects = parsed;
-    } else {
+    const CURRENT_STORAGE_VERSION = "v9_components_no_photos";
+    const currentVersion = localStorage.getItem("circuitr_version");
+    if (currentVersion !== CURRENT_STORAGE_VERSION) {
       projects = [...SEED_PROJECTS];
+      localStorage.setItem("circuitr_version", CURRENT_STORAGE_VERSION);
       saveProjects();
+      return;
     }
+    const saved = localStorage.getItem("circuitr_projects");
+    projects = saved ? JSON.parse(saved) : [...SEED_PROJECTS];
   } catch (err) {
     console.warn("LocalStorage error:", err);
     projects = [...SEED_PROJECTS];
