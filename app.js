@@ -19,6 +19,277 @@ let modalWorkflowSteps = [];
 
 // Sample Seed Data for Instant Exploration
 const SEED_PROJECTS = [
+{
+    "id": "proj_esp32_ble_oled",
+    "section": "projects",
+    "title": "ESP32 Bluetooth Serial (SPP/BLE) with 0.96\" I2C OLED & Terminal Controller",
+    "tagline": "Wireless bidirectional serial controller communicating between an Android Bluetooth terminal app and ESP32 with live SSD1306 display readout and hardware control.",
+    "category": "Embedded Systems",
+    "status": "Completed",
+    "mcu": "ESP32-WROOM-32 (30-Pin DevKit)",
+    "date": "2026-11-12",
+    "tags": [
+      "ESP32",
+      "Bluetooth",
+      "BLE",
+      "OLED",
+      "SSD1306",
+      "I2C",
+      "Android Terminal",
+      "C++"
+    ],
+    "description": "A responsive wireless control and telemetry system built around the ESP32 microcontroller using Bluetooth Classic SPP / BLE Serial.\n\nKey Capabilities:\n- Establishes robust 2.4 GHz wireless RF pairing with an Android Serial Bluetooth Terminal application.\n- Real-time display on a 0.96\" monochrome 128x64 I2C OLED display (SSD1306 driver), showing live Bluetooth connection status, received strings (e.g., personalized text like \"sayan\", \"dipan roy\"), and system state.\n- Interactive hardware actuation: toggles onboard and breadboard status indicator LEDs in response to incoming terminal commands.\n- Hardware push-button interface wired with debounced digital inputs for local command dispatch back to the smartphone terminal console.",
+    "photos": [
+      "assets/images/esp32-ble-oled-terminal-overview.jpg",
+      "assets/images/esp32-ble-oled-display-dipanroy.jpg",
+      "assets/images/esp32-ble-oled-display-sayan.jpg",
+      "assets/images/esp32-ble-mobile-app-terminal.jpg",
+      "assets/images/esp32-ble-ide-setup.jpg"
+    ],
+    "bom": [
+      {
+        "name": "ESP32 DevKit V1 (30-Pin)",
+        "qty": 1,
+        "ref": "MCU1",
+        "link": ""
+      },
+      {
+        "name": "0.96\" I2C Monochrome OLED Display (128x64 SSD1306)",
+        "qty": 1,
+        "ref": "DISP1",
+        "link": ""
+      },
+      {
+        "name": "Solderless Breadboard (830 Point)",
+        "qty": 1,
+        "ref": "BB1",
+        "link": ""
+      },
+      {
+        "name": "Diffused 5mm Amber/Yellow LED",
+        "qty": 1,
+        "ref": "LED1",
+        "link": ""
+      },
+      {
+        "name": "Tactile Push Buttons (6x6mm)",
+        "qty": 3,
+        "ref": "SW1-SW3",
+        "link": ""
+      },
+      {
+        "name": "Current Limiting Resistors (220 Ohm, 10k Ohm)",
+        "qty": 4,
+        "ref": "R1-R4",
+        "link": ""
+      },
+      {
+        "name": "Dupont Jumper Wires (Male-to-Male, Male-to-Female)",
+        "qty": 15,
+        "ref": "W1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world",
+    "cadUrl": "",
+    "codeSnippets": [
+      {
+        "fileName": "esp32_bluetooth_oled.ino",
+        "language": "arduino",
+        "code": "#include <Wire.h>\n#include <Adafruit_GFX.h>\n#include <Adafruit_SSD1306.h>\n#include \"BluetoothSerial.h\"\n\n#define SCREEN_WIDTH 128\n#define SCREEN_HEIGHT 64\n#define OLED_RESET -1\nAdafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);\n\nBluetoothSerial SerialBT;\nconst int ledPin = 2; // Indicator LED\nString incomingMessage = \"\";\n\nvoid setup() {\n  Serial.begin(115200);\n  pinMode(ledPin, OUTPUT);\n  \n  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {\n    Serial.println(F(\"SSD1306 allocation failed\"));\n    for(;;);\n  }\n  \n  display.clearDisplay();\n  display.setTextColor(WHITE);\n  display.setTextSize(1);\n  display.setCursor(0, 4);\n  display.println(\"ESP32 SPP\");\n  display.println(\"Bluetooth: ON\");\n  display.println(\"Waiting for peer...\");\n  display.display();\n\n  SerialBT.begin(\"ESP32-BLE-Button\");\n  Serial.println(\"Bluetooth Started! Ready to pair.\");\n}\n\nvoid loop() {\n  if (SerialBT.available()) {\n    char c = SerialBT.read();\n    if (c == '\\n' || c == '\\r') {\n      if (incomingMessage.length() > 0) {\n        display.clearDisplay();\n        display.setCursor(0, 4);\n        display.println(\"ESP32 SPP\");\n        display.println(\"Bluetooth: ON\");\n        display.println(\"-----------------\");\n        display.setTextSize(2);\n        display.println(incomingMessage);\n        display.display();\n        \n        if (incomingMessage == \"ON\") digitalWrite(ledPin, HIGH);\n        else if (incomingMessage == \"OFF\") digitalWrite(ledPin, LOW);\n        \n        SerialBT.print(\"Echo: \");\n        SerialBT.println(incomingMessage);\n        incomingMessage = \"\";\n      }\n    } else {\n      incomingMessage += c;\n    }\n  }\n}"
+      }
+    ],
+    "workflow": [
+      {
+        "title": "I2C Bus & OLED Wiring",
+        "description": "Connected SSD1306 OLED SDA pin to ESP32 GPIO 21 and SCL pin to GPIO 22. Verified I2C address 0x3C via scan sketch.",
+        "image": "assets/images/esp32-ble-oled-terminal-overview.jpg"
+      },
+      {
+        "title": "Bluetooth Serial Protocol Setup",
+        "description": "Initialized BluetoothSerial library configuring ESP32 as SPP slave \"ESP32-BLE-Button\". Paired successfully with Android smartphone serial console.",
+        "image": "assets/images/esp32-ble-mobile-app-terminal.jpg"
+      },
+      {
+        "title": "Bidirectional Command Testing",
+        "description": "Sent custom string commands like \"sayan\" and \"dipan roy\" from phone app terminal; confirmed low-latency display update on OLED screen and LED state switching.",
+        "image": "assets/images/esp32-ble-oled-display-dipanroy.jpg"
+      }
+    ]
+  },
+  {
+    "id": "proj_diy_2wd_robot_car",
+    "section": "projects",
+    "title": "DIY 2-Wheel Drive Smart Robot Car with Custom Enclosure & Dual 18650 Supply",
+    "tagline": "Custom-fabricated 2WD mobile robotics platform with dual yellow DC gearmotors, high-capacity 18650 Li-ion battery pack, and modular motor driver.",
+    "category": "Robotics",
+    "status": "Completed",
+    "mcu": "Arduino / ESP32 Controller",
+    "date": "2026-11-10",
+    "tags": [
+      "Robotics",
+      "2WD Robot",
+      "BO Motors",
+      "18650 Li-ion",
+      "Motor Driver",
+      "Custom Chassis",
+      "Arduino",
+      "DIY"
+    ],
+    "description": "A custom-fabricated two-wheel-drive mobile robotics platform engineered for obstacle traversal, wireless remote navigation, and automated movement routines.\n\nKey Design Highlights:\n- Lightweight box chassis custom folded and reinforced to house internal microcontrollers, motor drivers, and cable harnesses securely.\n- Powered by two high-torque yellow BO (battery-operated) DC gear motors mated with rubberized traction wheels.\n- Onboard dual 18650 rechargeable Li-ion battery pack delivering stable DC voltage with external charging connector port and power switch.\n- Integrated motor driver breakout module wired for bidirectional differential steering (forward, reverse, spin-left, spin-right).",
+    "photos": [
+      "assets/images/diy-robot-car-chassis-top.jpg",
+      "assets/images/diy-robot-car-driver-wiring.jpg",
+      "assets/images/diy-robot-car-battery-mount.jpg"
+    ],
+    "bom": [
+      {
+        "name": "Yellow BO Dual Shaft DC Gearmotors",
+        "qty": 2,
+        "ref": "M1, M2",
+        "link": ""
+      },
+      {
+        "name": "Rubber Tread Wheels (65mm)",
+        "qty": 2,
+        "ref": "W1, W2",
+        "link": ""
+      },
+      {
+        "name": "Motor Driver Breakout Board (L298N / Mini)",
+        "qty": 1,
+        "ref": "DRV1",
+        "link": ""
+      },
+      {
+        "name": "18650 3.7V Rechargeable Li-ion Batteries",
+        "qty": 2,
+        "ref": "BAT1, BAT2",
+        "link": ""
+      },
+      {
+        "name": "Dual 18650 Battery Holder with Leads",
+        "qty": 1,
+        "ref": "HOLD1",
+        "link": ""
+      },
+      {
+        "name": "Heavy-Duty Cardboard/Polymer Monocoque Chassis",
+        "qty": 1,
+        "ref": "CHAS1",
+        "link": ""
+      },
+      {
+        "name": "Dupont Connection Harness",
+        "qty": 12,
+        "ref": "WIRE1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world",
+    "cadUrl": "",
+    "codeSnippets": [
+      {
+        "fileName": "differential_drive.ino",
+        "language": "arduino",
+        "code": "// Motor Driver Pin Definitions\nconst int IN1 = 12;\nconst int IN2 = 14;\nconst int IN3 = 27;\nconst int IN4 = 26;\n\nvoid setup() {\n  pinMode(IN1, OUTPUT);\n  pinMode(IN2, OUTPUT);\n  pinMode(IN3, OUTPUT);\n  pinMode(IN4, OUTPUT);\n}\n\nvoid forward() {\n  digitalWrite(IN1, HIGH);\n  digitalWrite(IN2, LOW);\n  digitalWrite(IN3, HIGH);\n  digitalWrite(IN4, LOW);\n}\n\nvoid stopBot() {\n  digitalWrite(IN1, LOW);\n  digitalWrite(IN2, LOW);\n  digitalWrite(IN3, LOW);\n  digitalWrite(IN4, LOW);\n}\n\nvoid loop() {\n  forward();\n  delay(2000);\n  stopBot();\n  delay(1000);\n}"
+      }
+    ],
+    "workflow": [
+      {
+        "title": "Chassis Cutting & Wheel Alignment",
+        "description": "Constructed the lightweight rigid body shell, aligned the dual BO motors parallel, and fastened them securely to ensure straight tracking.",
+        "image": "assets/images/diy-robot-car-chassis-top.jpg"
+      },
+      {
+        "title": "Motor Driver & Wire Harness Routing",
+        "description": "Positioned the screw-terminal motor driver inside the chassis. Routed power and control logic wiring neatly to prevent mechanical snags.",
+        "image": "assets/images/diy-robot-car-driver-wiring.jpg"
+      },
+      {
+        "title": "Power Source & Li-ion Battery Integration",
+        "description": "Installed the dual 18650 battery compartment on the rear chassis, providing 7.4V nominal voltage through inline protection and charging leads.",
+        "image": "assets/images/diy-robot-car-battery-mount.jpg"
+      }
+    ]
+  },
+  {
+    "id": "proj_blynk_distance_meter",
+    "section": "projects",
+    "title": "IoT Ultrasonic Distance Meter with Blynk Cloud Web Dashboard",
+    "tagline": "Wi-Fi enabled real-time contactless distance measurement node using HC-SR04, NodeMCU/ESP, and Blynk Cloud telemetry gauge.",
+    "category": "IoT & Sensors",
+    "status": "Completed",
+    "mcu": "ESP8266 / NodeMCU ESP32",
+    "date": "2026-11-08",
+    "tags": [
+      "IoT",
+      "Blynk",
+      "Ultrasonic",
+      "HC-SR04",
+      "Cloud Telemetry",
+      "ESP8266",
+      "ESP32",
+      "Wi-Fi"
+    ],
+    "description": "A smart Internet-of-Things ultrasonic rangefinder communicating real-time distance measurements to a cloud dashboard.\n\nFeatures & Implementation:\n- HC-SR04 ultrasonic transducer module sends 40kHz sonic bursts to gauge proximity and distance with millimeter accuracy.\n- Wi-Fi SoC connects to local WLAN and streams sensor readings every 250ms to Blynk Cloud (Blynk Console).\n- Interactive Blynk Cloud web dashboard featuring a dynamic gauge widget showing instantaneous distance up to 400 cm.\n- Powered independently by a portable high-capacity 18650 Li-ion cylindrical cell with direct voltage regulation.",
+    "photos": [
+      "assets/images/blynk-ultrasonic-meter.jpg"
+    ],
+    "bom": [
+      {
+        "name": "HC-SR04 Ultrasonic Sonar Sensor",
+        "qty": 1,
+        "ref": "SEN1",
+        "link": ""
+      },
+      {
+        "name": "ESP8266 / ESP32 NodeMCU Board",
+        "qty": 1,
+        "ref": "U1",
+        "link": ""
+      },
+      {
+        "name": "18650 3.7V Li-ion Battery",
+        "qty": 1,
+        "ref": "BAT1",
+        "link": ""
+      },
+      {
+        "name": "Mini Solderless Breadboard",
+        "qty": 1,
+        "ref": "BB1",
+        "link": ""
+      },
+      {
+        "name": "Jumper Wire Set",
+        "qty": 6,
+        "ref": "W1",
+        "link": ""
+      }
+    ],
+    "githubUrl": "https://github.com/dipanr705-12/lets-explore-of-my-little-hardware-world",
+    "cadUrl": "",
+    "codeSnippets": [
+      {
+        "fileName": "blynk_distance_meter.ino",
+        "language": "arduino",
+        "code": "#define BLYNK_TEMPLATE_ID \"TMPLxxxxxx\"\n#define BLYNK_TEMPLATE_NAME \"distance meter\"\n#define BLYNK_AUTH_TOKEN \"YourAuthToken\"\n\n#include <ESP8266WiFi.h>\n#include <BlynkSimpleEsp8266.h>\n\nchar auth[] = BLYNK_AUTH_TOKEN;\nchar ssid[] = \"YourWiFiNetwork\";\nchar pass[] = \"YourWiFiPassword\";\n\nconst int trigPin = D5;\nconst int echoPin = D6;\n\nBlynkTimer timer;\n\nvoid sendDistance() {\n  digitalWrite(trigPin, LOW);\n  delayMicroseconds(2);\n  digitalWrite(trigPin, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(trigPin, LOW);\n  \n  long duration = pulseIn(echoPin, HIGH);\n  float distanceCm = duration * 0.034 / 2;\n  \n  if (distanceCm > 0 && distanceCm <= 400) {\n    Blynk.virtualWrite(V1, distanceCm);\n    Serial.print(\"Measured: \");\n    Serial.print(distanceCm);\n    Serial.println(\" cm\");\n  }\n}\n\nvoid setup() {\n  Serial.begin(115200);\n  pinMode(trigPin, OUTPUT);\n  pinMode(echoPin, INPUT);\n  \n  Blynk.begin(auth, ssid, pass);\n  timer.setInterval(500L, sendDistance);\n}\n\nvoid loop() {\n  Blynk.run();\n  timer.run();\n}"
+      }
+    ],
+    "workflow": [
+      {
+        "title": "HC-SR04 Transducer Setup & Pulse Timing",
+        "description": "Wired trigger and echo lines with level conditioning, calibrated time-of-flight acoustic sound calculation speed formula.",
+        "image": "assets/images/blynk-ultrasonic-meter.jpg"
+      },
+      {
+        "title": "Blynk IoT Cloud Datastream & Gauge Configuration",
+        "description": "Created Virtual Pin V1 Datastream (0-400 range, integer/float). Added gauge widget in Blynk Web Console with auto-scaling needle.",
+        "image": "assets/images/blynk-ultrasonic-meter.jpg"
+      }
+    ]
+  },
   {
     id: 'proj_esp32_rover',
     section: 'projects',
@@ -357,19 +628,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 function initStorage() {
   try {
     const saved = localStorage.getItem('circuitr_projects');
-    if (saved) {
-      projects = JSON.parse(saved).map(p => ({
-        section: p.section || 'projects',
-        ...p
-      }));
-      // If user previously only had the 3 original projects in localstorage, merge in the new component/module seeds
-      const hasComponents = projects.some(p => p.section === 'components');
-      const hasModules = projects.some(p => p.section === 'modules');
-      if (!hasComponents || !hasModules) {
-        const missingSeeds = SEED_PROJECTS.filter(s => (s.section === 'components' && !hasComponents) || (s.section === 'modules' && !hasModules));
-        projects = [...projects, ...missingSeeds];
-        saveProjects();
-      }
+    if (saved && !localStorage.getItem('circuitr_v2_migrated')) {
+      const parsed = JSON.parse(saved);
+      const userProjectIds = new Set(['proj_esp32_ble_oled', 'proj_diy_2wd_robot_car', 'proj_blynk_distance_meter']);
+      const existingFiltered = parsed.filter(p => !userProjectIds.has(p.id));
+      projects = [...SEED_PROJECTS.slice(0, 3), ...existingFiltered];
+      localStorage.setItem('circuitr_v2_migrated', 'true');
+      saveProjects();
+    } else if (saved) {
+      projects = JSON.parse(saved);
     } else {
       projects = [...SEED_PROJECTS];
       saveProjects();
